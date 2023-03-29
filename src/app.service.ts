@@ -25,5 +25,6 @@ export class AppService {
     console.log("get mosquitto data");
     console.log(data);
     //return;
+
   }
 }
