@@ -250,4 +250,11 @@ export class MqttService {
           type: controlInfo.type,
         };
       }
+
+
+
+      testtest(data) {
+        console.log("Hello data : ");
+        console.log(data);
+      }
 }

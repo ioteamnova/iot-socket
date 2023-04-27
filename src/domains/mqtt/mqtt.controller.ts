@@ -566,7 +566,10 @@ export class MqttController {
         }
       }
 
-
+      @MessagePattern('hello')  //구독하는 주제1
+      testtt(@pd() data: String, @Ctx() context: MqttContext){
+        return this.mqttService.testtest(data);
+      }
 
 
 }
