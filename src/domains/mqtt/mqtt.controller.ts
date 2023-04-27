@@ -66,21 +66,31 @@ const client = mqtt.connect(options);
  // var senddata = "macbook 온도 제어 데이터 : 3";
   function intervalFunc() {
    //-********-//
-    //제품코드 등록 pub
-    //client.publish("setup/setup/nest", JSON.stringify(senddata), options_);
+    //제품코드 등록 request
+    //client.publish("setup/request/nest", JSON.stringify(senddata), options_);
     //console.log("***setup pub::1");
 
-    //온습도 세팅 pub
-    //client.publish("temphumid/set/nest", JSON.stringify(senddata), options_);
+  //제품코드 등록 response
+
+
+    //온습도 세팅 setrequest
+    //client.publish("temphumid/setrequest/nest", JSON.stringify(senddata), options_);
     //console.log("***temphumid_set pub::1");
 
-    //온습도 auto pub
-     client.publish("temphumid/get/nest", JSON.stringify(senddata), options_);
-     console.log("***temphumid_get pub::1");
+    //온습도 세팅 setresponse
 
-    //제어모듈 auto pub
-    //client.publish("controlm/get/nest", JSON.stringify(senddata), options_);
+
+    //온습도 getresponse
+     //client.publish("temphumid/getrequest/nest", JSON.stringify(senddata), options_);
+     //console.log("***temphumid_get pub::1");
+
+     //온습도 getrequest
+
+    //제어모듈 getresponse
+    //client.publish("controlm/getrequest/nest", JSON.stringify(senddata), options_);
     //console.log("***controlm_get pub::1");
+
+    //제어모듈 getrequest
 
   }
 
@@ -91,11 +101,10 @@ const client = mqtt.connect(options);
 export class MqttController {
     constructor(private readonly mqttService: MqttService) {}
 
-    //제품코드 등록 : useridx, tempname 조회 
-    //client.publish("setup/setup/nest", JSON.stringify(senddata2), options);
-    @MessagePattern('setup/setup/nest')  
-    async setup(@pd() data: String) {
-      console.log("setup::1");
+    //제품코드 등록 요청 : useridx, tempname 조회 
+    @MessagePattern('setup/request/nest')  
+    async setuprequest(@pd() data: String) {
+      console.log("setup request::1");
 
       //userIdx, tempname 조회하여 체크
       
@@ -110,13 +119,13 @@ export class MqttController {
       //존재하지 않으면 false
       const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "tempname", origindata.tempname);
 
-      console.log("setup::2");
+      console.log("setup request::2");
       console.log(searchAuth);
       console.log(searchAuth.boardSerial);
 
       if (searchAuth) {
         //데이터가 존재한다면 iot_personal에 저장할 것. 
-        console.log("setup::3");
+        console.log("setup request::3");
 
         //json 데이터 생성
         const createiotData = {
@@ -136,37 +145,75 @@ export class MqttController {
         }
         const createBoard = await this.mqttService.createIotPersonal(JSON.parse(JSON.stringify(createiotData)));
 
-        console.log("setup::4");
+        console.log("setup request::4");
         console.log(createBoard);
 
+        //전송할 데이터 세팅
+        let options_={
+          retain:true,
+          qos:2};
 
+        //주기적으로 전송하기
+        let senddata = {
+          userIdx:origindata.userIdx, 
+          maxTemp:origindata.maxTemp, 
+          minTemp:origindata.minTemp,
+          maxHumid:origindata.maxHumid, 
+          minHumid:origindata.minHumid, 
+        };
 
-        // //전송할 데이터 세팅
-        // let options_={
-        //   retain:true,
-        //   qos:2};
+        let pubtopic = searchAuth.boardSerial+"/setup/request/pico";
 
-        // //주기적으로 전송하기
-        // let senddata = {
-        //   userIdx:origindata.userIdx, 
-        //   maxTemp:origindata.maxTemp, 
-        //   minTemp:origindata.minTemp,
-        //   maxHumid:origindata.maxHumid, 
-        //   minHumid:origindata.minHumid, 
-        // };
+        //publish 생성
+        client.publish(pubtopic, JSON.stringify(senddata), options_);
 
-        // let pubtopic = searchAuth.boardSerial+"/setup/setup/pico";
+        return true;
+      }
+    }
 
-        // //publish 생성
-        // client.publish(pubtopic, JSON.stringify(senddata), options_);
+    //제품코드 등록 응답 : useridx, boardSerial 조회 
+    @MessagePattern('setup/response/nest')  
+    async setupresponse(@pd() data: String) {
+      console.log("setup response::1");
+
+      //userIdx, tempname 조회하여 체크
+      let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+
+      //iot_authinfo 테이블에서 데이터 조회하여 데이터가 존재하면 true
+      //존재하지 않으면 false
+      const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
+
+      console.log("setup response::2");
+      console.log(searchAuth);
+      console.log(searchAuth.boardSerial);
+
+      if (searchAuth) {
+        //데이터가 존재한다면 iot_personal에 저장할 것. 
+        console.log("setup response::3");
+      
+
+        //전송할 데이터 세팅
+        let options_={
+          retain:true,
+          qos:2};
+
+        //주기적으로 전송하기
+        let senddata = {
+          type:1
+        };
+
+        let pubtopic = searchAuth.userIdx+"/"+searchAuth.tempname+"/temphumid/response/app";
+
+        //publish 생성
+        client.publish(pubtopic, JSON.stringify(senddata), options_);
 
         return true;
       }
     }
 
     //온습도 세팅
-    @MessagePattern('temphumid/set/nest')  
-    async updatetemphumidauto(@pd() data: String) {
+    @MessagePattern('temphumid/setrequest/nest')  
+    async settemphumidrequest(@pd() data: String) {
       console.log("temphumid set::1");
       
       //userIdx, tempname 조회하여 체크
@@ -195,44 +242,85 @@ export class MqttController {
         console.log("temphumid set::4");
         console.log(updateBoard);
 
-        // //전송할 데이터 세팅
-        // let options_={
-        //   retain:true,
-        //   qos:2};
+        //전송할 데이터 세팅
+        let options_={
+          retain:true,
+          qos:2};
 
-        //주기적으로 전송하기
-        // let senddata = {
-        //   maxTemp:origindata.maxTemp, 
-        //   minTemp:origindata.minTemp,
-        //   maxHumid:origindata.maxHumid, 
-        //   minHumid:origindata.minHumid, 
-        // };
         
-        // let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/temphumid/set/pico";
+        //주기적으로 전송하기
+        let senddata = {
+          maxTemp:origindata.maxTemp, 
+          minTemp:origindata.minTemp,
+          maxHumid:origindata.maxHumid, 
+          minHumid:origindata.minHumid, 
+        };
+        
+        let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/temphumid/setrequest/pico";
 
-        // //publish 생성
-        // client.publish(pubtopic, JSON.stringify(senddata), options_);
+        //publish 생성
+        client.publish(pubtopic, JSON.stringify(senddata), options_);
 
         
         return true;
       }
     }
 
-    //온습도 auto
-    @MessagePattern('temphumid/get/nest')  
-    async updatetemphumidset(@pd() data: String) {
-      console.log("temphumid get::1");
+      //온습도 세팅 응답 : useridx, boardSerial 조회 
+      @MessagePattern('temphumid/setresponse/nest')  
+      async settemphumidresponse(@pd() data: String) {
+        console.log("temphumid setresponse::1");
+  
+        //userIdx, tempname 조회하여 체크
+        let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+  
+        //iot_authinfo 테이블에서 데이터 조회하여 데이터가 존재하면 true
+        //존재하지 않으면 false
+        const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
+  
+        console.log("temphumid setresponse::2");
+        console.log(searchAuth);
+        console.log(searchAuth.boardSerial);
+  
+        if (searchAuth) {
+          //데이터가 존재한다면 iot_personal에 저장할 것. 
+          console.log("temphumid setresponse::3");
+        
+  
+          //전송할 데이터 세팅
+          let options_={
+            retain:true,
+            qos:2};
+  
+          //주기적으로 전송하기
+          let senddata = {
+            type:1
+          };
+  
+          let pubtopic = searchAuth.userIdx+"/"+searchAuth.tempname+"/temphumid/setresponse/app";
+  
+          //publish 생성
+          client.publish(pubtopic, JSON.stringify(senddata), options_);
+  
+          return true;
+        }
+      }
+
+    //온습도 응답
+    @MessagePattern('temphumid/getresponse/nest')  
+    async getresponsetemphumid(@pd() data: String) {
+      console.log("temphumid getresponse::1");
       
       let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
 			
       const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
 
-      console.log("temphumid get::2");
+      console.log("temphumid getresponse::2");
       console.log(searchAuth);
 
       if (searchAuth) {
 
-        console.log("temphumid get::3");
+        console.log("temphumid getresponse::3");
 
         //주기적으로 전송하기
         let senddata = {
@@ -267,7 +355,7 @@ export class MqttController {
           retain:true,
           qos:2};
 
-        let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/temphumid/get/app";
+        let pubtopic = searchAuth.userIdx+"/"+searchAuth.tempname+"/temphumid/getresponse/app";
 
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
@@ -276,22 +364,62 @@ export class MqttController {
         return true;
       }
     }
+      //온습도 요청 : useridx, tempname 조회 
+      @MessagePattern('temphumid/getrequest/nest')  
+      async getrequesttemphumid(@pd() data: String) {
+        console.log("temphumid getrequest::1");
+  
+        //userIdx, tempname 조회하여 체크
+        let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+  
+        //iot_authinfo 테이블에서 데이터 조회하여 데이터가 존재하면 true
+        //존재하지 않으면 false
+        const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "tempname", origindata.tempname);
+  
+        console.log("temphumid getrequest::2");
+        console.log(searchAuth);
+        console.log(searchAuth.boardSerial);
+  
+        if (searchAuth) {
+          //데이터가 존재한다면 iot_personal에 저장할 것. 
+          console.log("temphumid getrequest::3");
+        
+  
+          //전송할 데이터 세팅
+          let options_={
+            retain:true,
+            qos:2};
+  
+          //주기적으로 전송하기
+          let senddata = {
+            type:2
+          };
+  
+          let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/temphumid/getrequest/pico";
+  
+          //publish 생성
+          client.publish(pubtopic, JSON.stringify(senddata), options_);
+  
+          return true;
+        }
+      }
 
-    //제어모듈 auto
-    @MessagePattern('controlm/get/nest')  
+
+    //제어모듈 응답 : useridx, boardSerial 조회 
+    @MessagePattern('controlm/getresponse/nest')  
     async updatelightset(@pd() data: String) {
-      console.log("controlm get::1");
+      console.log("controlm getresponse::1");
       
       let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
 
       const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
 
-      console.log("controlm get::2");
+      console.log("controlm getresponse::2");
       console.log(searchAuth);
 
       if (searchAuth) {
 
-        console.log("controlm get::3");
+        console.log("controlm getresponse::3");
 
         console.log(origindata);
         console.log(origindata.light);
@@ -383,20 +511,64 @@ export class MqttController {
         // console.log(updateiotData);
         // console.log(senddata);
         
-        // //전송할 데이터 세팅
-        // let options_={
-        //   retain:true,
-        //   qos:2};
+        //전송할 데이터 세팅
+        let options_={
+          retain:true,
+          qos:2};
         
-        // let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/controlm/get/app";
+        let pubtopic = searchAuth.userIdx+"/"+searchAuth.tempname+"/controlm/getresponse/app";
 
-        // //publish 생성
-        // client.publish(pubtopic, JSON.stringify(senddata), options_);
+        //publish 생성
+        client.publish(pubtopic, JSON.stringify(senddata), options_);
 
 
         return true;
       }
     }
+
+      //제어모듈 요청 : useridx, tempname 조회 
+      @MessagePattern('controlm/getrequest/nest')  
+      async getrequestcontrolm(@pd() data: String) {
+        console.log("controlm getrequest::1");
+  
+        //userIdx, tempname 조회하여 체크
+        let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+  
+        //iot_authinfo 테이블에서 데이터 조회하여 데이터가 존재하면 true
+        //존재하지 않으면 false
+        const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "tempname", origindata.tempname);
+  
+        console.log("controlm getrequest::2");
+        console.log(searchAuth);
+        console.log(searchAuth.boardSerial);
+  
+        if (searchAuth) {
+          //데이터가 존재한다면 iot_personal에 저장할 것. 
+          console.log("controlm getrequest::3");
+        
+  
+          //전송할 데이터 세팅
+          let options_={
+            retain:true,
+            qos:2};
+  
+          //주기적으로 전송하기
+          let senddata = {
+            type:2
+          };
+  
+          let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/controlm/getrequest/pico";
+  
+          //publish 생성
+          client.publish(pubtopic, JSON.stringify(senddata), options_);
+  
+          return true;
+        }
+      }
+
+
+
+
 }
 
 //여기서 데이터 구독 받아서 처리 
