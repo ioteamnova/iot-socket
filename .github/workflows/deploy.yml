@@ -5,9 +5,9 @@ name: deploy
 
 on:
   push:
-    branches: [develop]
+    branches: [humphrey]
   pull_request:
-    branches: [develop]
+    branches: [humphrey]
 
 # jobs:
 #   build:
