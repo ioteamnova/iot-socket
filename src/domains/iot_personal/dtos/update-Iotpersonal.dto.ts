@@ -15,15 +15,19 @@ export class UpdateIotPersonalDto {
   
   @IsOptional()
   @IsBoolean()
-  light: boolean;
+  currentLight: boolean;
 
   @IsOptional()
   @IsBoolean()
-  waterpump: boolean;
+  autochkLight: boolean;
 
   @IsOptional()
   @IsBoolean()
-  coolingfan: boolean;
+  autochkWaterpump: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  autochkCoolingfan: boolean;
 
   @IsOptional()
   @IsNotEmpty()

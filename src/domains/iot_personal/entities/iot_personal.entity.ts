@@ -29,13 +29,16 @@ export class Iot_personal extends BaseEntity {
   cageName: string;
 
   @Column()
-  light: boolean;
+  currentLight: boolean;
 
   @Column()
-  waterpump: boolean;
+  autochkLight: boolean;
 
   @Column()
-  coolingfan: boolean;
+  autochkWaterpump: boolean;
+
+  @Column()
+  autochkCoolingfan: boolean;
 
   @Column()
   currentTemp: string;
@@ -64,9 +67,10 @@ export class Iot_personal extends BaseEntity {
     userIdx,
     petIdx,
     cageName,
-    light,
-    waterpump,
-    coolingfan,
+    currentLight,
+    autochkLight,
+    autochkWaterpump,
+    autochkCoolingfan,
     currentTemp,
     current2Temp,
     maxTemp,
@@ -80,9 +84,10 @@ export class Iot_personal extends BaseEntity {
     userIdx: number;
     petIdx: number;
     cageName: string;
-    light: boolean;
-    waterpump: boolean;
-    coolingfan: boolean;
+    currentLight: boolean;
+    autochkLight: boolean;
+    autochkWaterpump: boolean;
+    autochkCoolingfan: boolean;
     currentTemp: string;
     current2Temp: string;
     maxTemp: string;
@@ -97,9 +102,10 @@ export class Iot_personal extends BaseEntity {
     iot_person.userIdx = userIdx;
     iot_person.petIdx = petIdx;
     iot_person.cageName = cageName;
-    iot_person.light = light;
-    iot_person.waterpump = waterpump;
-    iot_person.coolingfan = coolingfan;
+    iot_person.currentLight = currentLight;
+    iot_person.autochkLight = autochkLight;
+    iot_person.autochkWaterpump = autochkWaterpump;
+    iot_person.autochkCoolingfan = autochkCoolingfan;
     iot_person.currentTemp = currentTemp;
     iot_person.current2Temp = current2Temp;
     iot_person.maxTemp = maxTemp;
@@ -117,9 +123,10 @@ export class Iot_personal extends BaseEntity {
     iot_personal.userIdx = dto.userIdx;
     iot_personal.petIdx = dto.petIdx;
     iot_personal.cageName = dto.cageName;
-    iot_personal.light = dto.light;
-    iot_personal.waterpump = dto.waterpump;
-    iot_personal.coolingfan = dto.coolingfan;
+    iot_personal.currentLight = dto.currentLight;
+    iot_personal.autochkLight = dto.autochkLight;
+    iot_personal.autochkWaterpump = dto.autochkWaterpump;
+    iot_personal.autochkCoolingfan = dto.autochkCoolingfan;
     iot_personal.currentTemp = dto.currentTemp;
     iot_personal.current2Temp = dto.current2Temp;
     iot_personal.maxTemp = dto.maxTemp;
@@ -137,9 +144,10 @@ export class Iot_personal extends BaseEntity {
 
   updateFromDto(dto: UpdateIotPersonalDto) {
     this.cageName = dto.cageName;
-    this.light = dto.light;
-    this.waterpump = dto.waterpump;
-    this.coolingfan = dto.coolingfan;
+    this.currentLight = dto.currentLight;
+    this.autochkLight = dto.autochkLight;
+    this.autochkWaterpump = dto.autochkWaterpump;
+    this.autochkCoolingfan = dto.autochkCoolingfan;
     this.currentTemp = dto.currentTemp;
     this.current2Temp = dto.current2Temp;
     this.maxTemp = dto.maxTemp;

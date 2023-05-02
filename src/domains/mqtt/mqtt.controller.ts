@@ -18,7 +18,7 @@ const clientCert = fs.readFileSync('/etc/mosquitto/CA/client_crt.crt');
 const caCert = fs.readFileSync('/etc/mosquitto/CA/ca.crt');
 
 const options = {
-  host: process.env.SERVERIP,
+  host: "43.201.185.236",
 	port: 8883,
 	protocol: 'mqtts',
   // ca: [fs.readFileSync('/etc/mosquitto/CA/ca.crt')],
@@ -51,14 +51,14 @@ const client = mqtt.connect(options);
   // };
 
   //온습도 세팅 pub
-  // var senddata = {
-  //   userIdx:1, //서칭 데이터
-  //   maxTemp:85.8, 
-  //   minTemp:20.2,
-  //   maxHumid:88.1, 
-  //   minHumid:45.5, 
-  //   tempname:"p1", //서칭 데이터
-  // }; 
+  var senddata = {
+    userIdx:1, //서칭 데이터
+    maxTemp:85.8, 
+    minTemp:20.2,
+    maxHumid:88.1, 
+    minHumid:45.5, 
+    tempname:"p1", //서칭 데이터
+  }; 
 
   //온습도 통신 auto pub
   // var senddata = {
@@ -79,9 +79,9 @@ const client = mqtt.connect(options);
     //   boardSerial:"123efwe4894wfwef", //서칭 데이터
     // }; 
 
-  // var options_={
-  //   retain:true,
-  //   qos:2};
+  var options_={
+    retain:true,
+    qos:2};
 
 
  // var senddata = "macbook 온도 제어 데이터 : 3";
@@ -198,7 +198,7 @@ export class MqttController {
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
 
-        return true;
+       // return true;
       }
     }
 
@@ -247,7 +247,7 @@ export class MqttController {
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
 
-        return true;
+       // return true;
       }
     }
 
@@ -307,12 +307,13 @@ export class MqttController {
         console.log("temphumid setrequest::5");
         console.log(searchAuth.boardSerial);
         console.log(pubtopic);
+        console.log(senddata);
 
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
 
         
-        return true;
+        //return true;
       }
     }
 
@@ -356,11 +357,12 @@ export class MqttController {
           console.log(searchAuth.userIdx);
           console.log(searchAuth.boardTempname);
           console.log(pubtopic);
+          console.log(senddata);
 
           //publish 생성
           client.publish(pubtopic, JSON.stringify(senddata), options_);
   
-          return true;
+          //return true;
         }
       }
 
@@ -434,7 +436,7 @@ export class MqttController {
 
         //type 2일때만 publish하도록 변경.
 
-        return true;
+        //return true;
       }
     }
       //온습도 요청 : useridx, tempname 조회 
@@ -468,7 +470,7 @@ export class MqttController {
   
           //주기적으로 전송하기
           let senddata = {
-            type:2
+            type:origindata.type
           };
   
           let pubtopic = searchAuth.boardSerial+"/temphumid/getrequest/pico";
@@ -481,7 +483,7 @@ export class MqttController {
           client.publish(pubtopic, JSON.stringify(senddata), options_);
 
 
-          return true;
+          //return true;
         }
       }
 
@@ -489,9 +491,10 @@ export class MqttController {
     //제어모듈 응답 : useridx, boardSerial 조회 
     @MessagePattern('controlm/getresponse/nest')  
     async updatelightset(@pd() data: String) {
-      console.log("controlm getresponse::1");
-      
+
       let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+      console.log("controlm getresponse::1");
+      console.log(origindata);
 
       const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
 
@@ -504,74 +507,41 @@ export class MqttController {
 
         console.log(origindata);
         console.log(origindata.Commanded_Function);
-        // console.log(origindata.light);
-        // console.log(origindata.waterpump);
-        // console.log(origindata.coolingfan);
         console.log(origindata.type);
-
-        //publish할 데이터 
-        let senddata = {
-          coolingfan:false,
-          waterpump:false,
-          light:false,
-          type:origindata.type,
-          result:false,
-        };
 
         //업데이트할 데이터 생성
         const updateiotData = {
-          coolingfan:false,
-          waterpump:false,
-          light:false,
+          currentLight:false,
         }
 
         //변경되는 데이터 수정
         if(origindata.Commanded_Function == "UVB_ON"){
-          console.log("origindata.coolingfan");
-
-          senddata.light = true;
-
-          delete updateiotData.coolingfan;
-          delete senddata.coolingfan;
-          delete updateiotData.waterpump;
-          delete senddata.waterpump;
-
+          console.log("origindata.UVB_ON");
+          updateiotData.currentLight = true;
         }else if(origindata.Commanded_Function == "UVB_OFF"){
-          console.log("origindata.waterpump");
-
-          senddata.light = false;
-
-          delete updateiotData.coolingfan;
-          delete senddata.coolingfan;
-          delete updateiotData.waterpump;
-          delete senddata.waterpump;
-
+          console.log("origindata.UVB_OFF");
+          updateiotData.currentLight = false;
         }else if(origindata.Commanded_Function == "COOLINGFAN_ON"){
-
-          senddata.coolingfan = true;
-
-          delete updateiotData.light;
-          delete senddata.light;
-          delete updateiotData.waterpump;
-          delete senddata.waterpump;
-
+          console.log("origindata.COOLINGFAN_ON");
+          delete updateiotData.currentLight;
         }else if(origindata.Commanded_Function == "WATERPUMP_ON"){
-          console.log("origindata.light");
-
-          senddata.waterpump = true;
-
-          delete updateiotData.coolingfan;
-          delete senddata.coolingfan;
-          delete updateiotData.light;
-          delete senddata.light;
-
+          console.log("origindata.WATERPUMP_ON");
+          delete updateiotData.currentLight;
         }
+
+        console.log("controlm getresponse::4");
+        console.log(updateiotData);
+
+
+        
 
         //현재 제어모듈 상태 업데이트
         const updateBoard = await this.mqttService.upadateIotPersonal(JSON.parse(JSON.stringify(updateiotData)), searchAuth.boardIdx);
         console.log(updateBoard);
 
         //creatControlData 를 수정 : 받아온 데이터중 널이 존재하면 currentControlinfo 여기서 데이터로 변경해줄 것
+
+        console.log("controlm getresponse::5");
 
         //최근 제어모듈 데이터 가져오기
         const currentControlinfo = await this.mqttService.getIotcontrolinfo(searchAuth.boardIdx);
@@ -590,8 +560,10 @@ export class MqttController {
         //최근 데이터가 있는 경우
         if(currentControlinfo != null){
           creatControlData.light = currentControlinfo.light;
-          creatControlData.coolingfan = currentControlinfo.coolingfan;
-          creatControlData.waterpump = currentControlinfo.waterpump;
+          //creatControlData.coolingfan = currentControlinfo.coolingfan;
+          //creatControlData.waterpump = currentControlinfo.waterpump;
+          creatControlData.coolingfan = false;
+          creatControlData.waterpump = false;
         }else{ //최근 데이터가 없는 경우
           creatControlData.light = false;
           creatControlData.coolingfan = false;
@@ -613,29 +585,40 @@ export class MqttController {
           creatControlData.waterpump = true;
         }
 
+        console.log("controlm getresponse::6");
+
         // 제어모듈 추가  ****************
         const createIotControl = await this.mqttService.createIotcontrolrecord(JSON.parse(JSON.stringify(creatControlData)));
-        console.log(createIotControl);
-        console.log("controlm getresponse::4");
+
         
+        //publish할 데이터 
+        let senddata = {
+          Commanded_Function:origindata.Commanded_Function,
+          type:origindata.type,
+          result:true,
+        };
+
+        console.log(createIotControl);
+        console.log("controlm getresponse::7");
+        console.log(senddata);
+
         //전송할 데이터 세팅
         let options_={
           retain:true,
           qos:2};
         
-        senddata.result = true;
+        
 
         let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardTempname+"/controlm/getresponse/app";
-        console.log("temphumid getresponse::5");    
+        console.log("controlm getresponse::8");    
         console.log(searchAuth.userIdx);
         console.log(searchAuth.boardTempname);
         console.log(pubtopic);  // 수정
+        console.log(senddata);  // 수정
         
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
 
-
-        return true;
       }
     }
 
@@ -646,6 +629,10 @@ export class MqttController {
   
         //userIdx, tempname 조회하여 체크
         let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+
+        console.log("controlm getrequest::1");
+        console.log(origindata);
+
   
         //iot_authinfo 테이블에서 데이터 조회하여 데이터가 존재하면 true
         //존재하지 않으면 false
@@ -670,29 +657,22 @@ export class MqttController {
             retain:true,
             qos:2};
   
-          let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/controlm/getrequest/pico";
+          let pubtopic = searchAuth.boardSerial+"/controlm/getrequest/pico";
   
           console.log("controlm getrequest::5");
-          console.log(searchAuth.userIdx);
           console.log(searchAuth.boardSerial);
           console.log(pubtopic);
 
           //publish 생성
           client.publish(pubtopic, JSON.stringify(senddata), options_);
   
-          return true;
+          //return true;
         }
       }
 
 
 
-      
-
-
-
-
-
-
+    
 
 
       @MessagePattern('hello')  //구독하는 주제1

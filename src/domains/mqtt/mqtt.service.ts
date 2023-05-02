@@ -238,18 +238,23 @@ export class MqttService {
           order:{ createdAt : 'DESC' }
         });
 
-        if (!controlInfo) {
-          throw new NotFoundException(SocketErrorConstants.CANNOT_FIND_USER);
-        }
+        console.log("getIotcontrolinfo::2");
+        console.log(controlInfo);
         
-        console.log('controlInfo:::',controlInfo);
-        return {
-          idx: controlInfo.idx,
-          light: controlInfo.light,
-          waterpump: controlInfo.waterpump,
-          coolingfan: controlInfo.coolingfan,
-          type: controlInfo.type,
-        };
+
+        if (!controlInfo) {
+          return controlInfo;
+          //throw new NotFoundException(SocketErrorConstants.CANNOT_FIND_USER);
+        }else{
+          console.log('controlInfo:::',controlInfo);
+          return {
+            idx: controlInfo.idx,
+            light: controlInfo.light,
+            waterpump: controlInfo.waterpump,
+            coolingfan: controlInfo.coolingfan,
+            type: controlInfo.type,
+          };
+        }
       }
 
 
