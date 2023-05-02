@@ -9,13 +9,13 @@ const fs = require('fs');
 //nodejs mqtt 로 만든 코드
 var mqtt = require('mqtt');
 
-// const clientKey = readFileSync('/etc/mosquitto/CA/client_key.pem');
-// const clientCert = readFileSync('/etc/mosquitto/CA/client_crt.crt');
-// const caCert = readFileSync('/etc/mosquitto/CA/ca.crt');
+const clientKey = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_key.pem');
+const clientCert = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_crt.crt');
+const caCert = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/ca.crt');
 
-const clientKey = fs.readFileSync('/etc/mosquitto/CA/client_key.pem');
-const clientCert = fs.readFileSync('/etc/mosquitto/CA/client_crt.crt');
-const caCert = fs.readFileSync('/etc/mosquitto/CA/ca.crt');
+// const clientKey = fs.readFileSync('/etc/mosquitto/CA/client_key.pem');
+// const clientCert = fs.readFileSync('/etc/mosquitto/CA/client_crt.crt');
+// const caCert = fs.readFileSync('/etc/mosquitto/CA/ca.crt');
 
 const options = {
   host: process.env.SERVERIP,
@@ -29,12 +29,6 @@ const options = {
 	cert: clientCert,
   rejectUnauthorized: false,
 };
-
-// TLS 인증서 파일 경로
-// const caFile = '/etc/mosquitto/CA/ca.crt';
-// const certFile = '/etc/mosquitto/CA/client_crt.crt';
-// const keyFile = '/etc/mosquitto/CA/client_key.pem';
-
 const client = mqtt.connect(options);
 
 // const client = mqtt.connect(options, {
@@ -509,42 +503,67 @@ export class MqttController {
         console.log("controlm getresponse::3");
 
         console.log(origindata);
-        console.log(origindata.light);
-        console.log(origindata.waterpump);
-        console.log(origindata.coolingfan);
+        console.log(origindata.Commanded_Function);
+        // console.log(origindata.light);
+        // console.log(origindata.waterpump);
+        // console.log(origindata.coolingfan);
         console.log(origindata.type);
 
         //publish할 데이터 
         let senddata = {
-          coolingfan:origindata.coolingfan,
-          waterpump:origindata.waterpump,
-          light:origindata.light,
+          coolingfan:false,
+          waterpump:false,
+          light:false,
           type:origindata.type,
+          result:false,
         };
 
         //업데이트할 데이터 생성
         const updateiotData = {
-          coolingfan:origindata.coolingfan,
-          waterpump:origindata.waterpump,
-          light:origindata.light,
+          coolingfan:false,
+          waterpump:false,
+          light:false,
         }
 
-        if(origindata.coolingfan == null){
+        if(origindata.Commanded_Function == "UVB_ON"){
           console.log("origindata.coolingfan");
+
+          senddata.light = true;
+
           delete updateiotData.coolingfan;
           delete senddata.coolingfan;
-        }
-        
-        if(origindata.waterpump == null){
-          console.log("origindata.waterpump");
           delete updateiotData.waterpump;
           delete senddata.waterpump;
-        }
-        
-        if(origindata.light == null){
-          console.log("origindata.light");
+
+        }else if(origindata.Commanded_Function == "UVB_OFF"){
+          console.log("origindata.waterpump");
+
+          senddata.light = false;
+
+          delete updateiotData.coolingfan;
+          delete senddata.coolingfan;
+          delete updateiotData.waterpump;
+          delete senddata.waterpump;
+
+        }else if(origindata.Commanded_Function == "COOLINGFAN_ON"){
+
+          senddata.coolingfan = true;
+
           delete updateiotData.light;
           delete senddata.light;
+          delete updateiotData.waterpump;
+          delete senddata.waterpump;
+
+        }else if(origindata.Commanded_Function == "WATERPUMP_ON"){
+          console.log("origindata.light");
+
+          senddata.waterpump = true;
+
+          delete updateiotData.coolingfan;
+          delete senddata.coolingfan;
+          delete updateiotData.light;
+          delete senddata.light;
+
         }
 
         //현재 제어모듈 상태 업데이트
@@ -563,36 +582,62 @@ export class MqttController {
         //json 데이터 생성
         const creatControlData = {
           boardIdx: searchAuth.boardIdx,
-          coolingfan:origindata.coolingfan,
-          waterpump:origindata.waterpump,
-          light:origindata.light,
+          light:false,
+          waterpump:false,
+          coolingfan:false,
           type: origindata.type,
         }
+
+        //최근 데이터가 있는 경우
+        if(currentControlinfo != null){
+          creatControlData.light = currentControlinfo.light;
+          creatControlData.coolingfan = currentControlinfo.coolingfan;
+          creatControlData.waterpump = currentControlinfo.waterpump;
+        }else{ //최근 데이터가 없는 경우
+          creatControlData.light = false;
+          creatControlData.coolingfan = false;
+          creatControlData.waterpump = false;
+        }
+
+
         //위에서 null이면 삭제함. 
         //아니면 다 가져온다음 전에 데이터 뒤져서 가져와서 넣어줘야함. 
         // console.log("creatControlData");
         // console.log(creatControlData);
         
-        if(origindata.coolingfan == null){
-          console.log("origindata.coolingfan");
-          creatControlData.coolingfan = currentControlinfo.coolingfan;
-        }
+        // if(origindata.coolingfan == null){
+        //   console.log("origindata.coolingfan");
+        //   creatControlData.coolingfan = currentControlinfo.coolingfan;
+        // }
         
-        if(origindata.waterpump == null){
-          console.log("origindata.waterpump");
-          creatControlData.waterpump = currentControlinfo.waterpump;
-        }
+        // if(origindata.waterpump == null){
+        //   console.log("origindata.waterpump");
+        //   creatControlData.waterpump = currentControlinfo.waterpump;
+        // }
         
-        if(origindata.light == null){
-          console.log("origindata.light");
-          creatControlData.light = currentControlinfo.light;
+        // if(origindata.light == null){
+        //   console.log("origindata.light");
+        //   creatControlData.light = currentControlinfo.light;
+        // }
+        if(origindata.Commanded_Function == "UVB_ON"){
+          console.log("UVB_ON");
+          creatControlData.light = true;
+        }else if(origindata.Commanded_Function == "UVB_OFF"){
+          console.log("UVB_OFF");
+          creatControlData.light = false;
+        }else if(origindata.Commanded_Function == "COOLINGFAN_ON"){
+          console.log("COOLINGFAN_ON");
+          creatControlData.coolingfan = true;
+        }else if(origindata.Commanded_Function == "WATERPUMP_ON"){
+          console.log("WATERPUMP_ON");
+          creatControlData.waterpump = true;
         }
+
 
         // 제어모듈 추가  ****************
         const createIotControl = await this.mqttService.createIotcontrolrecord(JSON.parse(JSON.stringify(creatControlData)));
         console.log(createIotControl);
         console.log("temphumid get::4");
-
 
         // console.log("temphumid get::5");
         // console.log(updateiotData);
@@ -603,7 +648,9 @@ export class MqttController {
           retain:true,
           qos:2};
         
-        let pubtopic = searchAuth.userIdx+"/"+searchAuth.tempname+"/controlm/getresponse/app";
+        senddata.result = true;
+
+        let pubtopic = searchAuth.userIdx+"/"+searchAuth.board_tempname+"/controlm/getresponse/app";
 
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
@@ -652,6 +699,17 @@ export class MqttController {
           return true;
         }
       }
+
+
+
+      
+
+
+
+
+
+
+
 
       @MessagePattern('hello')  //구독하는 주제1
       testtt(@pd() data: String, @Ctx() context: MqttContext){
