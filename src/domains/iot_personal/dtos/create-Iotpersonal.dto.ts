@@ -42,6 +42,10 @@ export class CreateIotPersonalDto {
 
   @IsNotEmpty()
   @IsString()
+  current2Temp: string;
+
+  @IsNotEmpty()
+  @IsString()
   maxTemp: string;
 
   @IsNotEmpty()
@@ -51,6 +55,11 @@ export class CreateIotPersonalDto {
   @IsNotEmpty()
   @IsString()
   currentHumid: string;
+
+  @IsNotEmpty()
+  @IsString()
+  current2Humid: string;
+
 
   @IsNotEmpty()
   @IsString()

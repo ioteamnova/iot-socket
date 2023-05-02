@@ -6,25 +6,26 @@ import { Transport } from '@nestjs/microservices/enums';
 import { readFileSync } from 'fs';
 
 async function bootstrap() {
-  const clientKey = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_key.pem');
-  const clientCert = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_crt.crt');
-  const caCert = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/ca.crt');
+  const clientKey = readFileSync('/etc/mosquitto/CA/client_key.pem');
+  const clientCert = readFileSync('/etc/mosquitto/CA/client_crt.crt');
+  const caCert = readFileSync('/etc/mosquitto/CA/ca.crt');
 
     //subscribe시 연결
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
       transport: Transport.MQTT,
       options: {
+        //url: "mqtts://43.201.185.236:8883",
         url: process.env.SERVERHOST,
-        clientId: 'server_nestjs',
-        protocol: 'mqtt',
+        clientId: 'server_nestjs_sub',
+        protocol: 'mqtts',
         rejectUnauthorized: false,
         //username : 'ioteamnova',
         //password : '1234',
         subscribeOptions:{
           qos: 2,
         },
-        key: clientKey,
-        cert: clientCert,
+        key: [clientKey],
+        cert: [clientCert],
         ca: [caCert],
       },
     });

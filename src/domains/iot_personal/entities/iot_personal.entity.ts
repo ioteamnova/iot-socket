@@ -40,12 +40,18 @@ export class Iot_personal extends BaseEntity {
   @Column()
   currentTemp: string;
   @Column()
+  current2Temp: string;
+
+  @Column()
   maxTemp: string;
   @Column()
   minTemp: string;
 
   @Column()
   currentHumid: string;
+  @Column()
+  current2Humid: string;
+
   @Column()
   maxHumid: string;
   @Column()
@@ -62,9 +68,11 @@ export class Iot_personal extends BaseEntity {
     waterpump,
     coolingfan,
     currentTemp,
+    current2Temp,
     maxTemp,
     minTemp,
     currentHumid,
+    current2Humid,
     maxHumid,
     minHumid,
     usage,
@@ -76,9 +84,11 @@ export class Iot_personal extends BaseEntity {
     waterpump: boolean;
     coolingfan: boolean;
     currentTemp: string;
+    current2Temp: string;
     maxTemp: string;
     minTemp: string;
     currentHumid: string;
+    current2Humid: string;
     maxHumid: string;
     minHumid: string;
     usage: string;
@@ -91,9 +101,11 @@ export class Iot_personal extends BaseEntity {
     iot_person.waterpump = waterpump;
     iot_person.coolingfan = coolingfan;
     iot_person.currentTemp = currentTemp;
+    iot_person.current2Temp = current2Temp;
     iot_person.maxTemp = maxTemp;
     iot_person.minTemp = minTemp;
     iot_person.currentHumid = currentHumid;
+    iot_person.current2Humid = current2Humid;
     iot_person.maxHumid = maxHumid;
     iot_person.minHumid = minHumid;
     iot_person.usage = usage;
@@ -109,9 +121,11 @@ export class Iot_personal extends BaseEntity {
     iot_personal.waterpump = dto.waterpump;
     iot_personal.coolingfan = dto.coolingfan;
     iot_personal.currentTemp = dto.currentTemp;
+    iot_personal.current2Temp = dto.current2Temp;
     iot_personal.maxTemp = dto.maxTemp;
     iot_personal.minTemp = dto.minTemp;
     iot_personal.currentHumid = dto.currentHumid;
+    iot_personal.current2Humid = dto.current2Humid;
     iot_personal.maxHumid = dto.maxHumid;
     iot_personal.minHumid = dto.minHumid;
     iot_personal.usage = dto.usage;
@@ -127,9 +141,11 @@ export class Iot_personal extends BaseEntity {
     this.waterpump = dto.waterpump;
     this.coolingfan = dto.coolingfan;
     this.currentTemp = dto.currentTemp;
+    this.current2Temp = dto.current2Temp;
     this.maxTemp = dto.maxTemp;
     this.minTemp = dto.minTemp;
     this.currentHumid = dto.currentHumid;
+    this.current2Humid = dto.current2Humid;
     this.maxHumid = dto.maxHumid;
     this.minHumid = dto.minHumid;
     this.usage = dto.usage;

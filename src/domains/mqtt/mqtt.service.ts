@@ -149,14 +149,14 @@ export class MqttService {
    * @param dto iot보드 dto
    * @returns board update
    */
-   async chkAuthinfo(userIdx: number, wheretype: string, serialcode: string) {
+   async chkAuthinfo(userIdx: number, wheretype: string, code: string) {
    // async chkAuthinfo(userIdx: number, tempname: string, dto: UpdateIotPersonalDto): Promise<Iot_authinfo> {
         console.log("chkAuth::1");
 
         console.log(userIdx); //unfined ??? 왜 실행?
-        console.log(serialcode);
+        console.log(code);
 
-        if(userIdx == null || serialcode == null){
+        if(userIdx == null || code == null){
           throw new NotFoundException(SocketErrorConstants.CANNOT_RIGHT_PARM);
         }
 
@@ -165,14 +165,14 @@ export class MqttService {
           iot_authinfo = await this.iot_authinfoRepository.findOne({
             where: {
               userIdx: userIdx,
-              boardTempname: serialcode,
+              boardTempname: code,
             },
           });
         }else if(wheretype == "boardSerial"){
           iot_authinfo = await this.iot_authinfoRepository.findOne({
             where: {
               userIdx: userIdx,
-              boardSerial: serialcode,
+              boardSerial: code,
             },
           });
         }

@@ -33,6 +33,11 @@ export class UpdateIotPersonalDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
+  current2Temp: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
   maxTemp: string;
 
   @IsOptional()
@@ -44,6 +49,11 @@ export class UpdateIotPersonalDto {
   @IsNotEmpty()
   @IsString()
   currentHumid: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  current2Humid: string;
 
   @IsOptional()
   @IsNotEmpty()

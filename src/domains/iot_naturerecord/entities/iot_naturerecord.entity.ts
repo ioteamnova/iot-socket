@@ -22,16 +22,27 @@ export class Iot_naturerecord extends BaseEntity {
   currentHumid: string;
 
   @Column()
+  current2Temp: string;
+
+  @Column()
+  current2Humid: string;
+
+
+  @Column()
   type: number; //1. refresh, 2. auto
 
   static from({
     boardIdx,
     currentTemp,
     currentHumid,
+    current2Temp,
+    current2Humid,
     type,
   }: {
     boardIdx: number;
     currentTemp: string;
+    current2Humid: string;
+    current2Temp: string;
     currentHumid: string;
     type: number;
   }) {
@@ -39,6 +50,8 @@ export class Iot_naturerecord extends BaseEntity {
     iot_naturerecord.boardIdx = boardIdx;
     iot_naturerecord.currentTemp = currentTemp;
     iot_naturerecord.currentHumid = currentHumid;
+    iot_naturerecord.current2Temp = current2Temp;
+    iot_naturerecord.current2Humid = current2Humid;
     iot_naturerecord.type = type;
     return iot_naturerecord;
   }
@@ -48,6 +61,8 @@ export class Iot_naturerecord extends BaseEntity {
     iot_naturerecord.boardIdx = dto.boardIdx;
     iot_naturerecord.currentTemp = dto.currentTemp;
     iot_naturerecord.currentHumid = dto.currentHumid;
+    iot_naturerecord.current2Temp = dto.current2Temp;
+    iot_naturerecord.current2Humid = dto.current2Humid;
     iot_naturerecord.type = dto.type;
 
     return iot_naturerecord;
