@@ -525,6 +525,7 @@ export class MqttController {
           light:false,
         }
 
+        //변경되는 데이터 수정
         if(origindata.Commanded_Function == "UVB_ON"){
           console.log("origindata.coolingfan");
 
@@ -569,8 +570,6 @@ export class MqttController {
         //현재 제어모듈 상태 업데이트
         const updateBoard = await this.mqttService.upadateIotPersonal(JSON.parse(JSON.stringify(updateiotData)), searchAuth.boardIdx);
         console.log(updateBoard);
-        
-
 
         //creatControlData 를 수정 : 받아온 데이터중 널이 존재하면 currentControlinfo 여기서 데이터로 변경해줄 것
 
@@ -599,26 +598,7 @@ export class MqttController {
           creatControlData.waterpump = false;
         }
 
-
-        //위에서 null이면 삭제함. 
-        //아니면 다 가져온다음 전에 데이터 뒤져서 가져와서 넣어줘야함. 
-        // console.log("creatControlData");
-        // console.log(creatControlData);
-        
-        // if(origindata.coolingfan == null){
-        //   console.log("origindata.coolingfan");
-        //   creatControlData.coolingfan = currentControlinfo.coolingfan;
-        // }
-        
-        // if(origindata.waterpump == null){
-        //   console.log("origindata.waterpump");
-        //   creatControlData.waterpump = currentControlinfo.waterpump;
-        // }
-        
-        // if(origindata.light == null){
-        //   console.log("origindata.light");
-        //   creatControlData.light = currentControlinfo.light;
-        // }
+        //변경되는 데이터 수정
         if(origindata.Commanded_Function == "UVB_ON"){
           console.log("UVB_ON");
           creatControlData.light = true;
@@ -632,7 +612,6 @@ export class MqttController {
           console.log("WATERPUMP_ON");
           creatControlData.waterpump = true;
         }
-
 
         // 제어모듈 추가  ****************
         const createIotControl = await this.mqttService.createIotcontrolrecord(JSON.parse(JSON.stringify(creatControlData)));
