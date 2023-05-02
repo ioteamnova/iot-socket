@@ -616,11 +616,7 @@ export class MqttController {
         // 제어모듈 추가  ****************
         const createIotControl = await this.mqttService.createIotcontrolrecord(JSON.parse(JSON.stringify(creatControlData)));
         console.log(createIotControl);
-        console.log("temphumid get::4");
-
-        // console.log("temphumid get::5");
-        // console.log(updateiotData);
-        // console.log(senddata);
+        console.log("controlm getresponse::4");
         
         //전송할 데이터 세팅
         let options_={
@@ -629,8 +625,12 @@ export class MqttController {
         
         senddata.result = true;
 
-        let pubtopic = searchAuth.userIdx+"/"+searchAuth.board_tempname+"/controlm/getresponse/app";
-
+        let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardTempname+"/controlm/getresponse/app";
+        console.log("temphumid getresponse::5");
+        console.log(searchAuth.userIdx);
+        console.log(searchAuth.boardTempname);
+        console.log(pubtopic);
+        
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
 
@@ -667,11 +667,16 @@ export class MqttController {
   
           //주기적으로 전송하기
           let senddata = {
-            type:2
+            type:2 //passive
           };
   
           let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/controlm/getrequest/pico";
   
+          console.log("controlm getrequest::5");
+          console.log(searchAuth.userIdx);
+          console.log(searchAuth.boardSerial);
+          console.log(pubtopic);
+
           //publish 생성
           client.publish(pubtopic, JSON.stringify(senddata), options_);
   
