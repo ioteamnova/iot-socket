@@ -8,15 +8,15 @@ import { readFileSync } from 'fs';
 
 
 async function bootstrap() {
-  const clientKey = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_key.pem');
-  const clientCert = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_crt.crt');
-  const caCert = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/ca.crt');
-/*
-  서버
+  // const clientKey = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_key.pem');
+  // const clientCert = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_crt.crt');
+  // const caCert = readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/ca.crt');
+
+  //서버
   const clientKey = readFileSync('/etc/mosquitto/CA/client_key.pem');
   const clientCert = readFileSync('/etc/mosquitto/CA/client_crt.crt');
   const caCert = readFileSync('/etc/mosquitto/CA/ca.crt');
-**/
+
 
 
     //subscribe시 연결

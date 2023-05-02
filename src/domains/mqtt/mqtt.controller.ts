@@ -9,13 +9,13 @@ const fs = require('fs');
 //nodejs mqtt 로 만든 코드
 var mqtt = require('mqtt');
 
-const clientKey = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_key.pem');
-const clientCert = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_crt.crt');
-const caCert = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/ca.crt');
+// const clientKey = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_key.pem');
+// const clientCert = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/client_crt.crt');
+// const caCert = fs.readFileSync('/Users/humphrey/Documents/mqtt_server_ssl/ca.crt');
 
-// const clientKey = fs.readFileSync('/etc/mosquitto/CA/client_key.pem');
-// const clientCert = fs.readFileSync('/etc/mosquitto/CA/client_crt.crt');
-// const caCert = fs.readFileSync('/etc/mosquitto/CA/ca.crt');
+const clientKey = fs.readFileSync('/etc/mosquitto/CA/client_key.pem');
+const clientCert = fs.readFileSync('/etc/mosquitto/CA/client_crt.crt');
+const caCert = fs.readFileSync('/etc/mosquitto/CA/ca.crt');
 
 const options = {
   host: process.env.SERVERIP,
