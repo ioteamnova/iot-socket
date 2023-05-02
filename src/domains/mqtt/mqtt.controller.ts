@@ -626,10 +626,10 @@ export class MqttController {
         senddata.result = true;
 
         let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardTempname+"/controlm/getresponse/app";
-        console.log("temphumid getresponse::5");
+        console.log("temphumid getresponse::5");    
         console.log(searchAuth.userIdx);
         console.log(searchAuth.boardTempname);
-        console.log(pubtopic);
+        console.log(pubtopic);  // 수정
         
         //publish 생성
         client.publish(pubtopic, JSON.stringify(senddata), options_);
