@@ -659,16 +659,16 @@ export class MqttController {
           //데이터가 존재한다면 iot_personal에 저장할 것. 
           console.log("controlm getrequest::3");
         
-  
+          //주기적으로 전송하기
+          let senddata = {
+            Commanded_Function:origindata.Commanded_Function, //passive
+            type:origindata.type //passive
+          };
+
           //전송할 데이터 세팅
           let options_={
             retain:true,
             qos:2};
-  
-          //주기적으로 전송하기
-          let senddata = {
-            type:2 //passive
-          };
   
           let pubtopic = searchAuth.userIdx+"/"+searchAuth.boardSerial+"/controlm/getrequest/pico";
   
