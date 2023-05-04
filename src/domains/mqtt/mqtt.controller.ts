@@ -549,12 +549,12 @@ export class MqttController {
       console.log("*****************************************::제어모듈 응답::*****************************************");
       let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
       console.log("제어모듈 응답::1");
-      console.log("origindata : " + origindata);
+      console.log("origindata : " + JSON.stringify(origindata));
 
       const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
 
       console.log("제어모듈 응답::2");
-      console.log("searchAuth : " + searchAuth);
+      console.log("searchAuth : " + JSON.stringify(searchAuth));
 
       if (searchAuth) {
 
