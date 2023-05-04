@@ -9,10 +9,25 @@ export interface SocketErrorFormat {
 }
 
 export const SocketErrorConstants = {
-  UNAUTHORIZED: {
-    errorCode: 'UNAUTHORIZED',
-    message: '로그인이 필요합니다.',
+  CANNOT_FIND_BOARD: {
+    errorCode: 'CANNOT_FIND_BOARD',
+    message: '등록된 보드를 찾을 수 없습니다.',
   } as SocketErrorFormat,
+
+  CANNOT_RIGHT_PARM: {
+    errorCode: 'CANNOT_RIGHT_PARM',
+    message: '올바르지 않은 파라미터 값 입니다.',
+  } as SocketErrorFormat,
+
+  CANNOT_FIND_AUTH: {
+    errorCode: 'CANNOT_FIND_AUTH',
+    message: '등록된 인증 정보(authinfo)를 찾을 수 없습니다.',
+  } as SocketErrorFormat,
+
+
+
+
+
 
   FORBIDDEN: {
     errorCode: 'FORBIDDEN',
@@ -39,15 +54,8 @@ export const SocketErrorConstants = {
     message: '이메일 또는 비밀번호가 올바르지 않습니다.',
   } as SocketErrorFormat,
 
-  CANNOT_FIND_USER: {
-    errorCode: 'CANNOT_FIND_USER',
-    message: '등록된 유저와 보드를 찾을 수 없습니다.',
-  } as SocketErrorFormat,
 
-  CANNOT_RIGHT_PARM: {
-    errorCode: 'CANNOT_RIGHT_PARM',
-    message: '맞지 않는 파라미터 값입니다.',
-  } as SocketErrorFormat,
+
 
   AUTH_LINK_EXPIRED: {
     errorCode: 'AUTH_LINK_EXPIRED',
