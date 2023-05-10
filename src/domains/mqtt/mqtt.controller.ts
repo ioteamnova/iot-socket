@@ -89,7 +89,7 @@ var senddata = {
 // }; 
 
 var options_ = {
-  retain: true,
+  retain: false,
   qos: 0
 };
 
