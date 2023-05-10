@@ -19,25 +19,25 @@ async function bootstrap() {
 
 
 
-    //subscribe시 연결
-    const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-      transport: Transport.MQTT,
-      options: {
-        //url: "mqtts://43.201.185.236:8883",
-        url: process.env.SERVERHOST,
-        clientId: 'server_nestjs_sub',
-        protocol: 'mqtts',
-        rejectUnauthorized: false,
-        //username : 'ioteamnova',
-        //password : '1234',
-        subscribeOptions:{
-          qos: 2,
-        },
-        key: [clientKey],
-        cert: [clientCert],
-        ca: [caCert],
+  //subscribe시 연결
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    transport: Transport.MQTT,
+    options: {
+      //url: "mqtts://43.201.185.236:8883",
+      url: process.env.SERVERHOST,
+      clientId: 'server_nestjs_sub',
+      protocol: 'mqtts',
+      rejectUnauthorized: false,
+      //username : 'ioteamnova',
+      //password : '1234',
+      subscribeOptions: {
+        qos: 0,
       },
-    });
+      key: [clientKey],
+      cert: [clientCert],
+      ca: [caCert],
+    },
+  });
 
   //const app = await NestFactory.create(AppModule);
   //lib사용하여 데이터 검증하는 부분

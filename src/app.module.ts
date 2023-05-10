@@ -6,10 +6,10 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 //import { LoggerMiddleware } from './core/middlewares/logger.middleware';
 
 import { User } from './domains/user/entities/user.entity';
-import { Iot_personal } from './domains/iot_personal/entities/iot_personal.entity';
-import { Iot_authinfo } from './domains/iot_authinfo/entities/iot_authinfo.entity';
-import { Iot_naturerecord } from './domains/iot_naturerecord/entities/iot_naturerecord.entity';
-import { Iot_controlrecord } from './domains/iot_controlrecord/entities/iot_controlrecord.entity';
+import { IotBoardPersonal } from './domains/iot_board_personal/entities/iot-board-personal.entity';
+import { IotAuthInfo } from './domains/iot_auth_info/entities/iot-auth-info.entity';
+import { IotNatureRecord } from './domains/iot_nature_record/entities/iot-nature-record.entity';
+import { IotControlRecord } from './domains/iot_control_record/entities/iot-control-record.entity';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { Iot_controlrecord } from './domains/iot_controlrecord/entities/iot_cont
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWD,
       database: process.env.DB_DATABASE,
-      entities: [User, Iot_personal, Iot_authinfo, Iot_naturerecord, Iot_controlrecord], // 사용할 entity의 클래스명을 넣어둔다.
+      entities: [User, IotBoardPersonal, IotAuthInfo, IotNatureRecord, IotControlRecord], // 사용할 entity의 클래스명을 넣어둔다.
       synchronize: false, // false로 해두는 게 안전하다.
       logging: true,
       namingStrategy: new SnakeNamingStrategy(),

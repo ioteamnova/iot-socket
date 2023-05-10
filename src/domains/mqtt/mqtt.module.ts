@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UserRepository } from '../user/repositories/user.repository';
-import { Iot_personalRepository } from '../iot_personal/repositories/iot_personal.repository';
-import { Iot_authinfoRepository } from '../iot_authinfo/repositories/iot_authinfo.repository';
-import { Iot_naturerecordRepository } from '../iot_naturerecord/repositories/iot_naturerecord.repository';
-import { Iot_controlrecordRepository } from '../iot_controlrecord/repositories/iot_controlrecord.repository';
+import { IotBoardPersonalRepository } from '../iot_board_personal/repositories/iot-board-personal.repository';
+import { IotAuthInfoRepository } from '../iot_auth_info/repositories/iot-auth-info.repository';
+import { IotNatureRecordRepository } from '../iot_nature_record/repositories/iot-nature-record.repository';
+import { IotControlRecordRepository } from '../iot_control_record/repositories/iot-control-record.repository';
 
 import { MqttController } from './mqtt.controller';
 import { MqttService } from './mqtt.service';
@@ -12,7 +12,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
-    TypeOrmExModule.forCustomRepository([UserRepository, Iot_personalRepository, Iot_authinfoRepository, Iot_naturerecordRepository, Iot_controlrecordRepository, ]),
+    TypeOrmExModule.forCustomRepository([UserRepository, IotBoardPersonalRepository, IotAuthInfoRepository, IotNatureRecordRepository, IotControlRecordRepository, ]),
   ],
   controllers: [MqttController],
   providers: [MqttService],

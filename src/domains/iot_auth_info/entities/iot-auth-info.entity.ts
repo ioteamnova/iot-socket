@@ -9,7 +9,7 @@ import { UpdateIotAuthinfoDto } from '../dtos/update-Iotauthinfo.dto';
 //db 테이블 필드 맞추는 곳
 
 @Entity()
-export class Iot_authinfo extends BaseEntity {
+export class IotAuthInfo extends BaseEntity {
 
   @Column({
     nullable: false,
@@ -46,31 +46,15 @@ export class Iot_authinfo extends BaseEntity {
     boardTempname: string;
     boardSerial: string;
   }) {
-    const iot_authinfo = new Iot_authinfo();
-    iot_authinfo.boardIdx = boardIdx;
-    iot_authinfo.userIdx = userIdx;
-    iot_authinfo.boardTempname = boardTempname;
-    iot_authinfo.boardSerial = boardSerial;
-    return iot_authinfo;
+    const iot_auth_info = new IotAuthInfo();
+    iot_auth_info.boardIdx = boardIdx;
+    iot_auth_info.userIdx = userIdx;
+    iot_auth_info.boardTempname = boardTempname;
+    iot_auth_info.boardSerial = boardSerial;
+    return iot_auth_info;
   }
 
   updateFromDto(dto: UpdateIotAuthinfoDto) {
     this.boardIdx = dto.boardIdx;
-    // this.currentLight = dto.currentLight;
-    // this.autochkLight = dto.autochkLight;
-    // this.autochkWaterpump = dto.autochkWaterpump;
-    // this.autochkCoolingfan = dto.autochkCoolingfan;
-    // this.currentTemp = dto.currentTemp;
-    // this.current2Temp = dto.current2Temp;
-    // this.maxTemp = dto.maxTemp;
-    // this.minTemp = dto.minTemp;
-    // this.currentHumid = dto.currentHumid;
-    // this.current2Humid = dto.current2Humid;
-    // this.maxHumid = dto.maxHumid;
-    // this.minHumid = dto.minHumid;
-    // this.usage = dto.usage;
-
-    // console.log("updateBoard::3");
-    // console.log(dto);
   }
 }

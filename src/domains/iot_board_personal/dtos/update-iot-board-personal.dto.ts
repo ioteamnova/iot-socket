@@ -1,25 +1,9 @@
 //import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsNumber,
-  Matches,
-  MaxLength,
-} from 'class-validator';
-//import { PasswordRegex } from 'src/utils/password.utils';
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
-export class CreateIotPersonalDto {
-  @IsNotEmpty()
-  @IsNumber()
-  userIdx: number;
+export class UpdateIotBoardPersonalDto {
 
-  @IsNotEmpty()
-  @IsNumber()
-  petIdx: number;
-
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   cageName: string;
@@ -30,50 +14,69 @@ export class CreateIotPersonalDto {
 
   @IsOptional()
   @IsBoolean()
-  autochkLight: boolean;
+  autoChkLight: boolean;
 
   @IsOptional()
   @IsBoolean()
-  autochkWaterpump: boolean;
+  autoChkTemp: boolean;
 
   @IsOptional()
   @IsBoolean()
-  autochkCoolingfan: boolean;
+  autoChkHumid: boolean;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   currentTemp: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  current2Temp: string;
+  currentTemp2: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   maxTemp: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   minTemp: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   currentHumid: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  current2Humid: string;
+  currentHumid2: string;
 
-
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   maxHumid: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   minHumid: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   usage: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  autoLightUtctimeOn: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  autoLightUtctimeOff: string;
 }
+

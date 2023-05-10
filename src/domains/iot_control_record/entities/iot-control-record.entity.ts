@@ -1,5 +1,6 @@
 //import { UpdateUserDto } from './../dtos/update-user.dto';
 import BaseEntity from 'src/core/entity/base.entity';
+import { IsType } from 'src/core/entity/enums';
 // import { hashPassword } from 'src/utils/password.utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { CreateIotControlrecordDto } from '../dtos/create-Iotcontrolrecord.dto';
@@ -7,7 +8,7 @@ import { CreateIotControlrecordDto } from '../dtos/create-Iotcontrolrecord.dto';
 //db 테이블 필드 맞추는 곳
 
 @Entity()
-export class Iot_controlrecord extends BaseEntity {
+export class IotControlRecord extends BaseEntity {
 
   @Column({
     nullable: false,
@@ -24,8 +25,8 @@ export class Iot_controlrecord extends BaseEntity {
   @Column()
   coolingfan: boolean;
 
-  @Column()
-  type: number; //1. refresh, 2. auto
+  @Column({ type: 'enum', name: 'type', enum: IsType })
+  type: number; //1. auto, 2. passive
 
   static from({
     boardIdx,
@@ -40,7 +41,7 @@ export class Iot_controlrecord extends BaseEntity {
     coolingfan: boolean;
     type: number;
   }) {
-    const iot_controlrecord = new Iot_controlrecord();
+    const iot_controlrecord = new IotControlRecord();
     iot_controlrecord.boardIdx = boardIdx;
     iot_controlrecord.light = light;
     iot_controlrecord.waterpump = waterpump;
@@ -50,7 +51,7 @@ export class Iot_controlrecord extends BaseEntity {
   }
 
   static fromDto(dto: CreateIotControlrecordDto) {
-    const iot_controlrecord = new Iot_controlrecord();
+    const iot_controlrecord = new IotControlRecord();
     iot_controlrecord.boardIdx = dto.boardIdx;
     iot_controlrecord.light = dto.light;
     iot_controlrecord.waterpump = dto.waterpump;

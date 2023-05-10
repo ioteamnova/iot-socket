@@ -26,11 +26,11 @@ export class CreateIotNaturerecordDto {
 
   @IsNotEmpty()
   @IsString()
-  current2Temp: string;
+  currentTemp2: string;
 
   @IsNotEmpty()
   @IsString()
-  current2Humid: string;
+  currentHumid2: string;
 
   @IsNotEmpty()
   @IsNumber()
