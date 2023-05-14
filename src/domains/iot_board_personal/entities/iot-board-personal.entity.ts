@@ -18,39 +18,58 @@ export class IotBoardPersonal extends BaseEntity {
 
   @Column({
     nullable: false,
+    //length: 11,
+  })
+  authIdx: number;
+
+  @Column({
+    nullable: false,
     length: 255,
   })
   cageName: string;
 
   @Column()
-  currentLight: boolean;
+  currentUvbLight: number;
 
   @Column()
-  autoChkLight: boolean;
+  currentHeatingLight: number;
 
-  @Column()
-  autoChkTemp: boolean;
+  @Column({
+    nullable: false,
+  })
+  autoChkLight: number;
 
-  @Column()
-  autoChkHumid: boolean;
+  @Column({
+    nullable: false,
+  })
+  autoChkTemp: number;
+
+  @Column({
+    nullable: false,
+  })
+  autoChkHumid: number;
 
   @Column()
   currentTemp: string;
+
   @Column()
   currentTemp2: string;
 
   @Column()
   maxTemp: string;
+
   @Column()
   minTemp: string;
 
   @Column()
   currentHumid: string;
+
   @Column()
   currentHumid2: string;
 
   @Column()
   maxHumid: string;
+
   @Column()
   minHumid: string;
 
@@ -63,19 +82,21 @@ export class IotBoardPersonal extends BaseEntity {
   @Column({
     nullable: false,
     length: 32,
-   })
-   autoLightUtctimeOn: string;
- 
-   @Column({
-     nullable: false,
-     length: 32,
-   })
-   autoLightUtctimeOff: string;
+  })
+  autoLightUtctimeOn: string;
+
+  @Column({
+    nullable: false,
+    length: 32,
+  })
+  autoLightUtctimeOff: string;
 
   static from({
     userIdx,
+    authIdx,
     cageName,
-    currentLight,
+    currentUvbLight,
+    currentHeatingLight,
     autoChkLight,
     autoChkTemp,
     autoChkHumid,
@@ -92,11 +113,13 @@ export class IotBoardPersonal extends BaseEntity {
     autoLightUtctimeOff,
   }: {
     userIdx: number;
+    authIdx: number;
     cageName: string;
-    currentLight: boolean;
-    autoChkLight: boolean;
-    autoChkTemp: boolean;
-    autoChkHumid: boolean;
+    currentUvbLight: number;
+    currentHeatingLight: number;
+    autoChkLight: number;
+    autoChkTemp: number;
+    autoChkHumid: number;
     currentTemp: string;
     currentTemp2: string;
     maxTemp: string;
@@ -111,8 +134,10 @@ export class IotBoardPersonal extends BaseEntity {
   }) {
     const iot_board_personal = new IotBoardPersonal();
     iot_board_personal.userIdx = userIdx;
+    iot_board_personal.authIdx = authIdx;
     iot_board_personal.cageName = cageName;
-    iot_board_personal.currentLight = currentLight;
+    iot_board_personal.currentUvbLight = currentUvbLight;
+    iot_board_personal.currentHeatingLight = currentHeatingLight;
     iot_board_personal.autoChkLight = autoChkLight;
     iot_board_personal.autoChkTemp = autoChkTemp;
     iot_board_personal.autoChkHumid = autoChkHumid;
@@ -133,8 +158,10 @@ export class IotBoardPersonal extends BaseEntity {
   static fromDto(dto: CreateIotBoardPersonalDto) {
     const iot_board_personal = new IotBoardPersonal();
     iot_board_personal.userIdx = dto.userIdx;
+    iot_board_personal.authIdx = dto.authIdx;
     iot_board_personal.cageName = dto.cageName;
-    iot_board_personal.currentLight = dto.currentLight;
+    iot_board_personal.currentUvbLight = dto.currentUvbLight;
+    iot_board_personal.currentHeatingLight = dto.currentHeatingLight;
     iot_board_personal.autoChkLight = dto.autoChkLight;
     iot_board_personal.autoChkTemp = dto.autoChkTemp;
     iot_board_personal.autoChkHumid = dto.autoChkHumid;
@@ -154,7 +181,8 @@ export class IotBoardPersonal extends BaseEntity {
 
   updateFromDto(dto: UpdateIotBoardPersonalDto) {
     this.cageName = dto.cageName;
-    this.currentLight = dto.currentLight;
+    this.currentUvbLight = dto.currentUvbLight;
+    this.currentHeatingLight = dto.currentHeatingLight;
     this.autoChkLight = dto.autoChkLight;
     this.autoChkTemp = dto.autoChkTemp;
     this.autoChkHumid = dto.autoChkHumid;

@@ -17,35 +17,41 @@ export class IotControlRecord extends BaseEntity {
   boardIdx: number;
 
   @Column()
-  light: boolean;
+  uvbLight: number;
 
   @Column()
-  waterpump: boolean;
+  heatingLight: number;
 
   @Column()
-  coolingfan: boolean;
+  waterPump: number;
+
+  @Column()
+  coolingFan: number;
 
   @Column({ type: 'enum', name: 'type', enum: IsType })
   type: number; //1. auto, 2. passive
 
   static from({
     boardIdx,
-    light,
-    waterpump,
-    coolingfan,
+    uvbLight,
+    heatingLight,
+    waterPump,
+    coolingFan,
     type,
   }: {
     boardIdx: number;
-    light: boolean;
-    waterpump: boolean;
-    coolingfan: boolean;
+    uvbLight: number;
+    heatingLight: number;
+    waterPump: number;
+    coolingFan: number;
     type: number;
   }) {
     const iot_controlrecord = new IotControlRecord();
     iot_controlrecord.boardIdx = boardIdx;
-    iot_controlrecord.light = light;
-    iot_controlrecord.waterpump = waterpump;
-    iot_controlrecord.coolingfan = coolingfan;
+    iot_controlrecord.uvbLight = uvbLight;
+    iot_controlrecord.heatingLight = heatingLight;
+    iot_controlrecord.waterPump = waterPump;
+    iot_controlrecord.coolingFan = coolingFan;
     iot_controlrecord.type = type;
     return iot_controlrecord;
   }
@@ -53,9 +59,10 @@ export class IotControlRecord extends BaseEntity {
   static fromDto(dto: CreateIotControlrecordDto) {
     const iot_controlrecord = new IotControlRecord();
     iot_controlrecord.boardIdx = dto.boardIdx;
-    iot_controlrecord.light = dto.light;
-    iot_controlrecord.waterpump = dto.waterpump;
-    iot_controlrecord.coolingfan = dto.coolingfan;
+    iot_controlrecord.uvbLight = dto.uvbLight;
+    iot_controlrecord.heatingLight = dto.heatingLight;
+    iot_controlrecord.waterPump = dto.waterPump;
+    iot_controlrecord.coolingFan = dto.coolingFan;
     iot_controlrecord.type = dto.type;
 
     return iot_controlrecord;

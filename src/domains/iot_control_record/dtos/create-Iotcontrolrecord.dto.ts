@@ -1,6 +1,5 @@
 //import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -18,15 +17,20 @@ export class CreateIotControlrecordDto {
 
   @IsNotEmpty()
   @IsNumber()
-  light: boolean;
+  uvbLight: number;
 
   @IsNotEmpty()
   @IsNumber()
-  waterpump: boolean;
+  heatingLight: number;
+
 
   @IsNotEmpty()
   @IsNumber()
-  coolingfan: boolean;
+  waterPump: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  coolingFan: number;
 
   @IsNotEmpty()
   @IsNumber()

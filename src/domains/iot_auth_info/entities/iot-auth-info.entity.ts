@@ -10,13 +10,6 @@ import { UpdateIotAuthinfoDto } from '../dtos/update-Iotauthinfo.dto';
 
 @Entity()
 export class IotAuthInfo extends BaseEntity {
-
-  @Column({
-    nullable: false,
-    //length: 11,
-  })
-  boardIdx: number;
-
   @Column({
     nullable: false,
     //length: 11,
@@ -47,7 +40,6 @@ export class IotAuthInfo extends BaseEntity {
     boardSerial: string;
   }) {
     const iot_auth_info = new IotAuthInfo();
-    iot_auth_info.boardIdx = boardIdx;
     iot_auth_info.userIdx = userIdx;
     iot_auth_info.boardTempname = boardTempname;
     iot_auth_info.boardSerial = boardSerial;
@@ -55,6 +47,6 @@ export class IotAuthInfo extends BaseEntity {
   }
 
   updateFromDto(dto: UpdateIotAuthinfoDto) {
-    this.boardIdx = dto.boardIdx;
+    // this.boardIdx = dto.boardIdx;
   }
 }

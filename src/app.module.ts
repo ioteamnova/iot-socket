@@ -10,6 +10,7 @@ import { IotBoardPersonal } from './domains/iot_board_personal/entities/iot-boar
 import { IotAuthInfo } from './domains/iot_auth_info/entities/iot-auth-info.entity';
 import { IotNatureRecord } from './domains/iot_nature_record/entities/iot-nature-record.entity';
 import { IotControlRecord } from './domains/iot_control_record/entities/iot-control-record.entity';
+import { IotEmergency } from './domains/iot_emergency/entities/iot-emergency.entity';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { IotControlRecord } from './domains/iot_control_record/entities/iot-cont
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWD,
       database: process.env.DB_DATABASE,
-      entities: [User, IotBoardPersonal, IotAuthInfo, IotNatureRecord, IotControlRecord], // 사용할 entity의 클래스명을 넣어둔다.
+      entities: [User, IotBoardPersonal, IotAuthInfo, IotNatureRecord, IotControlRecord, IotEmergency], // 사용할 entity의 클래스명을 넣어둔다.
       synchronize: false, // false로 해두는 게 안전하다.
       logging: true,
       namingStrategy: new SnakeNamingStrategy(),
@@ -34,4 +35,4 @@ import { IotControlRecord } from './domains/iot_control_record/entities/iot-cont
   ],
 
 })
-export class AppModule {}
+export class AppModule { }

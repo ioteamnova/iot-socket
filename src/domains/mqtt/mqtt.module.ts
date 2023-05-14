@@ -8,14 +8,14 @@ import { IotControlRecordRepository } from '../iot_control_record/repositories/i
 import { MqttController } from './mqtt.controller';
 import { MqttService } from './mqtt.service';
 import { TypeOrmExModule } from 'src/core/typeorm-ex.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { IotEmergencyRepository } from '../iot_emergency/repositories/iot-emergency.repository';
 
 @Module({
   imports: [
-    TypeOrmExModule.forCustomRepository([UserRepository, IotBoardPersonalRepository, IotAuthInfoRepository, IotNatureRecordRepository, IotControlRecordRepository, ]),
+    TypeOrmExModule.forCustomRepository([UserRepository, IotBoardPersonalRepository, IotAuthInfoRepository, IotNatureRecordRepository, IotControlRecordRepository, IotEmergencyRepository]),
   ],
   controllers: [MqttController],
   providers: [MqttService],
   exports: [MqttService, TypeOrmExModule],
 })
-export class MqttModule {}
+export class MqttModule { }

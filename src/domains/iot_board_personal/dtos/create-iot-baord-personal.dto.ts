@@ -1,13 +1,9 @@
 //import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsBoolean,
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsNumber,
-  Matches,
-  MaxLength,
 } from 'class-validator';
 //import { PasswordRegex } from 'src/utils/password.utils';
 
@@ -18,27 +14,31 @@ export class CreateIotBoardPersonalDto {
 
   @IsNotEmpty()
   @IsNumber()
-  petIdx: number;
+  authIdx: number;
 
   @IsNotEmpty()
   @IsString()
   cageName: string;
-  
-  @IsOptional()
-  @IsBoolean()
-  currentLight: boolean;
 
   @IsOptional()
-  @IsBoolean()
-  autoChkLight: boolean;
+  @IsNumber()
+  currentUvbLight: number;
 
   @IsOptional()
-  @IsBoolean()
-  autoChkTemp: boolean;
+  @IsNumber()
+  currentHeatingLight: number;
 
   @IsOptional()
-  @IsBoolean()
-  autoChkHumid: boolean;
+  @IsNumber()
+  autoChkLight: number;
+
+  @IsOptional()
+  @IsNumber()
+  autoChkTemp: number;
+
+  @IsOptional()
+  @IsNumber()
+  autoChkHumid: number;
 
   @IsNotEmpty()
   @IsString()

@@ -31,6 +31,9 @@ import { CreateIotControlrecordDto } from '../iot_control_record/dtos/create-Iot
 import { SocketErrorConstants } from 'src/core/socket/socket-error-objects';
 
 import * as mqtt from 'mqtt';
+import { CreateIotEmergencyDto } from '../iot_emergency/dtos/create-Iotemergency.dto';
+import { IotEmergency } from '../iot_emergency/entities/iot-emergency.entity';
+import { IotEmergencyRepository } from '../iot_emergency/repositories/iot-emergency.repository';
 
 
 @Injectable()
@@ -42,7 +45,7 @@ export class MqttService {
     private iotAuthInfoRepository: IotAuthInfoRepository,
     private iotNatureRecordRepository: IotNatureRecordRepository,
     private iotControlRecordRepository: IotControlRecordRepository,
-
+    private iotEmergencyRepository: IotEmergencyRepository,
   ) { }
 
   /**
@@ -132,30 +135,24 @@ export class MqttService {
    * @param dto iot인증 dto
    * @returns 인증된 board search
    */
-  async chkDuplicate(boardIdx: number, userIdx: number) {
-    // async chkAuthinfo(userIdx: number, boardTempname: string, dto: UpdateIotPersonalDto): Promise<Iot_authinfo> {
+  async chkDuplicate(authIdx: number, userIdx: number) {
     console.log("chkDuplicate::1");
-    console.log(boardIdx);
+    console.log(authIdx);
     console.log(userIdx);
 
-    if (boardIdx == null || userIdx == null) {
+    if (authIdx == null || userIdx == null) {
       throw new NotFoundException(SocketErrorConstants.CANNOT_RIGHT_PARM);
     }
 
-    let iot_auth_board = await this.iotBoardPersonalRepository.findOne({
+    let iotboard = await this.iotBoardPersonalRepository.findOne({
       where: {
-        idx: boardIdx,
+        authIdx: authIdx,
         userIdx: userIdx,
       },
     });
 
     console.log("chkDuplicate***::2");
-    return iot_auth_board;
-    //  if (!iot_auth_board) {
-    //   return iot_auth_board;
-    //  }else{
-    //   return iot_auth_board;
-    //  }
+    return iotboard;
   }
 
   /**
@@ -245,14 +242,14 @@ export class MqttService {
       console.log('controlInfo:::', controlInfo);
       return {
         idx: controlInfo.idx,
-        light: controlInfo.light,
-        waterpump: controlInfo.waterpump,
-        coolingfan: controlInfo.coolingfan,
+        uvbLight: controlInfo.uvbLight,
+        heatingLight: controlInfo.heatingLight,
+        waterpump: controlInfo.waterPump,
+        coolingfan: controlInfo.coolingFan,
         type: controlInfo.type,
       };
     }
   }
-
 
   /**
    *  보드 정보
@@ -277,6 +274,47 @@ export class MqttService {
     });
 
     return iot_board;
+  }
+
+  /**
+ *  비상알람 등록
+ * @param dto iot보드 dto
+ * @returns board save
+ */
+  async createIotEmergency(dto: CreateIotEmergencyDto): Promise<IotEmergency> {
+    //await this.checkExistEmail(dto.email);
+    console.log("createIotEmergency::1");
+
+    const Iotemergency = IotEmergency.fromDto(dto);
+    console.log("createIotEmergency::2");
+
+    return await this.iotEmergencyRepository.save(Iotemergency);
+  }
+
+  /**
+ *  authIdx로 보드정보 가져오기 
+ * @param dto 
+ * @returns 인증된 board search
+ */
+  async getBoardInfo(authIdx: number, userIdx: number) {
+    console.log("chkResetupDuplicate::1");
+    console.log(authIdx);
+
+    if (authIdx == null) {
+      throw new NotFoundException(SocketErrorConstants.CANNOT_RIGHT_PARM);
+    }
+
+    let iotboard = await this.iotBoardPersonalRepository.findOne({
+      where: {
+        authIdx: authIdx,
+        userIdx: userIdx,
+      },
+    });
+
+    console.log("chkResetupDuplicate***::2");
+    console.log(iotboard);
+
+    return iotboard;
   }
 
 
