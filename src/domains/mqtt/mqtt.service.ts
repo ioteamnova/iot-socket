@@ -54,7 +54,6 @@ export class MqttService {
    * @returns board save
    */
   async createIotPersonal(dto: CreateIotBoardPersonalDto): Promise<IotBoardPersonal> {
-    //await this.checkExistEmail(dto.email);
     console.log("createIot::2");
 
     const Iotpersonal = IotBoardPersonal.fromDto(dto);
@@ -79,7 +78,6 @@ export class MqttService {
     if (!iot_board_personal) {
       throw new NotFoundException(SocketErrorConstants.CANNOT_FIND_BOARD);
     }
-    //console.log(user);
 
     const result = iot_board_personal.updateFromDto(dto);
     console.log("updateBoard::2");
@@ -93,7 +91,6 @@ export class MqttService {
    * @returns auth search
    */
   async chkAuthinfo(userIdx: number, wheretype: string, code: string) {
-    // async chkAuthinfo(userIdx: number, boardTempname: string, dto: UpdateIotPersonalDto): Promise<Iot_authinfo> {
     console.log("chkAuth::1");
 
     console.log(userIdx);
@@ -122,7 +119,6 @@ export class MqttService {
 
     console.log("chkAuth::2");
     if (!iot_authinfo) {
-      //throw new NotFoundException(SocketErrorConstants.CANNOT_FIND_AUTH);
       return null;
     } else {
       return iot_authinfo;
@@ -237,7 +233,6 @@ export class MqttService {
 
     if (!controlInfo) {
       return controlInfo;
-      //throw new NotFoundException(SocketErrorConstants.CANNOT_FIND_USER);
     } else {
       console.log('controlInfo:::', controlInfo);
       return {
@@ -282,7 +277,6 @@ export class MqttService {
  * @returns board save
  */
   async createIotEmergency(dto: CreateIotEmergencyDto): Promise<IotEmergency> {
-    //await this.checkExistEmail(dto.email);
     console.log("createIotEmergency::1");
 
     const Iotemergency = IotEmergency.fromDto(dto);

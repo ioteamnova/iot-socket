@@ -4,7 +4,6 @@ import { ValidationPipe } from "@nestjs/common";
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { Transport } from '@nestjs/microservices/enums';
 import { readFileSync } from 'fs';
-// import { setupSwagger } from './core/swagger';
 
 
 async function bootstrap() {
