@@ -549,10 +549,13 @@ export class MqttController {
       }
 
       //수동일때만 전송
-      if (origindata.type == 2) {
-        pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/temphumid/getresponse/app";
-        this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
-      }
+      //if (origindata.type == 2) {
+      pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/temphumid/getresponse/app";
+      this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
+
+      this.topicRetainDelete(beforeTopicAction, pubtopic);
+
+      //}
 
       console.log("*****************************************::온습도 응답::*****************************************");
     } else {//null
@@ -601,6 +604,8 @@ export class MqttController {
       //publish 생성
       this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
 
+      //변경하면서 전에 토픽 보유 메세지 삭제하기 
+      this.topicRetainDelete(beforeTopicAction, pubtopic);
       console.log("*****************************************::온습도 요청::*****************************************");
 
     } else {//null
@@ -801,6 +806,8 @@ export class MqttController {
 
       //publish 생성
       this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
+      //변경하면서 전에 토픽 보유 메세지 삭제하기 
+      this.topicRetainDelete(beforeTopicAction, pubtopic);
 
       console.log("*****************************************::제어모듈 요청::*****************************************");
 
