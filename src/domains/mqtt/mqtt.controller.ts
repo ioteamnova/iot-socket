@@ -90,15 +90,14 @@ var options_test = {
 
 //비상알람 통신 auto pub
 var senddata_test = {
-  userIdx: 30, //서칭 데이터
-  boardSerial: "HJKSFBIUWEBUVEMKNJWE", //서칭 데이터
+  boardIdx: 136, //서칭 데이터
+  cageName: "딩고집", //서칭 데이터
   module: 1,
   limit: "MAX_TEMP",
   currentTemp: 40.5,
   currentHumid: 50.3,
   currentTemp2: 35.8,
   currentHumid2: 55.1,
-  type: 1,
 };
 
 
@@ -111,8 +110,9 @@ function intervalFunc() {
   //client.publish("HJKSFBIUWEBUVEMKNJWE/setup/request/pico", JSON.stringify(senddata_test), options_test);
   //client.publish("30/KR_B1/setup/response/app", JSON.stringify(senddata_test), options_test);
   // client.publish("hello", JSON.stringify(senddata_test), options_test);
-  client.publish("emergency/getresponse/nest", JSON.stringify(senddata_test), options_test);
 
+
+  client.publish("30/KR_B1/emergency/getresponse/app", JSON.stringify(senddata_test), options_test);
   console.log("***setup pub::1");
 
   //searchAuth.userIdx+"/"+searchAuth.boardTempname+"/setup/response/app"
@@ -142,7 +142,7 @@ function intervalFunc() {
 }
 
 // intervalFunc();
-//setInterval(intervalFunc, 2000);
+// setInterval(intervalFunc, 5000);
 
 
 //보유 메세지 삭제하는 코드 예시 
@@ -151,7 +151,7 @@ function intervalFunc() {
 //   qos: 0
 // };
 // // client.publish("setup/request/nest", null, optionsDelete);
-// client.publish("emergency/getresponse/nest", null, optionsDelete);
+// client.publish("30/KR_B1/emergency/getresponse/app", null, optionsDelete);
 
 
 
@@ -218,11 +218,9 @@ export class MqttController {
         console.log("createBoard : " + JSON.stringify(createBoard));
         console.log("updateAuth : " + JSON.stringify(updateAuth));
 
-        //utc 시간 자르기
-        let autoLightUtctimeOn = origindata.autoLightUtctimeOn;
-        let autoLightUtctimeOff = origindata.autoLightUtctimeOff;
-        autoLightUtctimeOn = autoLightUtctimeOn.split(':');
-        autoLightUtctimeOff = autoLightUtctimeOff.split(':');
+        // //utc 시간 자르기
+        // let autoLightUtctimeOn = origindata.autoLightUtctimeOn.split(':');
+        // let autoLightUtctimeOff = origindata.autoLightUtctimeOff.split(':');
 
         //전송 데이터
         let senddata = {
@@ -234,12 +232,26 @@ export class MqttController {
           autoChkLight: origindata.autoChkLight,
           autoChkTemp: origindata.autoChkTemp,
           autoChkHumid: origindata.autoChkHumid,
-          ligthTurnOnHour: autoLightUtctimeOn[0],
-          ligthTurnOnMinute: autoLightUtctimeOn[1],
-          ligthTurnOffHour: autoLightUtctimeOff[0],
-          ligthTurnOffMinute: autoLightUtctimeOff[1],
+
+          ligthTurnOnHour: "",
+          ligthTurnOnMinute: "",
+          ligthTurnOffHour: "",
+          ligthTurnOffMinute: "",
           return: true,
         };
+
+        if (origindata.autoLightUtctimeOn && origindata.autoLightUtctimeOff) {
+          //utc 시간 자르기
+          let autoLightUtctimeOn = origindata.autoLightUtctimeOn.split(':');
+          let autoLightUtctimeOff = origindata.autoLightUtctimeOff.split(':');
+
+          senddata.ligthTurnOnHour = autoLightUtctimeOn[0];
+          senddata.ligthTurnOnMinute = autoLightUtctimeOn[1];
+          senddata.ligthTurnOffHour = autoLightUtctimeOff[0];
+          senddata.ligthTurnOffMinute = autoLightUtctimeOff[1];
+        }
+
+
         pubtopic = searchAuth.boardSerial + "/setup/request/pico";
         //publish 생성
         this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
@@ -362,6 +374,8 @@ export class MqttController {
       // console.log("autoChkHumid :: " + new Boolean(origindata.autoChkHumid));
       console.log("autoChkHumid :: " + origindata.autoChkHumid);
 
+
+
       //json 데이터 생성
       const updateiotData = {
         cageName: origindata.cageName,
@@ -376,24 +390,12 @@ export class MqttController {
         autoLightUtctimeOn: origindata.autoLightUtctimeOn,
         autoLightUtctimeOff: origindata.autoLightUtctimeOff,
       }
-
-      // if (origindata.autoChkLight == "undefined") {
-      //   delete origindata.autoChkLight;
-      // }
-      // if (origindata.autoChkTemp == "undefined") {
-      //   delete origindata.autoChkTemp;
-      // }
-      // if (origindata.autoChkHumid == "undefined") {
-      //   delete origindata.autoChkHumid;
-      // }
-
       console.log("updateiotData :: " + JSON.stringify(updateiotData));
 
       const updateBoard = await this.mqttService.upadateIotPersonal(JSON.parse(JSON.stringify(updateiotData)), boardOneInfo.idx);
       console.log("boardOneInfo : " + JSON.stringify(boardOneInfo));
       console.log("updateBoard : " + JSON.stringify(updateBoard));
 
-      //전송 데이터
       let senddata = {
         maxTemp: origindata.maxTemp,
         minTemp: origindata.minTemp,
@@ -402,11 +404,32 @@ export class MqttController {
         autoChkLight: origindata.autoChkLight,
         autoChkTemp: origindata.autoChkTemp,
         autoChkHumid: origindata.autoChkHumid,
-        ligthTurnOffHour: origindata.ligthTurnOffHour,
-        ligthTurnOffMinute: origindata.ligthTurnOffMinute,
-        ligthTurnOnHour: origindata.ligthTurnOnHour,
-        ligthTurnOnMinute: origindata.ligthTurnOnMinute,
+
+        ligthTurnOnHour: "",
+        ligthTurnOnMinute: "",
+        ligthTurnOffHour: "",
+        ligthTurnOffMinute: "",
       };
+
+
+      if (origindata.autoLightUtctimeOn && origindata.autoLightUtctimeOff) {
+        //utc 시간 자르기
+        let autoLightUtctimeOn = origindata.autoLightUtctimeOn.split(':');
+        let autoLightUtctimeOff = origindata.autoLightUtctimeOff.split(':');
+
+        senddata.ligthTurnOnHour = autoLightUtctimeOn[0];
+        senddata.ligthTurnOnMinute = autoLightUtctimeOn[1];
+        senddata.ligthTurnOffHour = autoLightUtctimeOff[0];
+        senddata.ligthTurnOffMinute = autoLightUtctimeOff[1];
+      }
+
+      //시간 데이터 없으면 삭제 하기
+      // if (!origindata.autoLightUtctimeOn || !origindata.autoLightUtctimeOff) {
+      //   delete senddata.ligthTurnOnHour
+      //   delete senddata.ligthTurnOnMinute
+      //   delete senddata.ligthTurnOffHour
+      //   delete senddata.ligthTurnOffMinute
+      // }
 
       pubtopic = searchAuth.boardSerial + "/temphumid/setrequest/pico";
       console.log("senddata : " + JSON.stringify(senddata));
@@ -494,6 +517,9 @@ export class MqttController {
     console.log("*****************************************::온습도 응답::*****************************************");
     let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
 
+    if (origindata.type == 3) {
+      console.log("보드 리스트::1");
+    }
     console.log("온습도 응답::1");
     console.log("origindata : " + JSON.stringify(origindata));
 
@@ -510,14 +536,39 @@ export class MqttController {
       console.log("온습도 응답::4");
       console.log("searchAuth : " + JSON.stringify(boardOneInfo));
 
-      //주기적으로 전송하기
-      let senddata = {
-        currentTemp: origindata.currentTemp,
-        currentHumid: origindata.currentHumid,
-        currentTemp2: origindata.currentTemp2,
-        currentHumid2: origindata.currentHumid2,
-        type: origindata.type,
-      };
+      //senddata 생성하기
+      let senddata;
+      if (origindata.type == 3) {
+        senddata = {
+          boardIdx: boardOneInfo.idx,
+          cageName: boardOneInfo.cageName,
+          currentUvbLight: boardOneInfo.currentUvbLight,
+          currentHeatingLight: boardOneInfo.currentHeatingLight,
+          autoChkLight: boardOneInfo.autoChkLight,
+          autoChkTemp: boardOneInfo.autoChkTemp,
+          autoChkHumid: boardOneInfo.autoChkHumid,
+          currentTemp: origindata.currentTemp, //최신 온습도 세팅
+          currentTemp2: origindata.currentTemp2, //최신 온습도 세팅
+          maxTemp: boardOneInfo.maxTemp,
+          minTemp: boardOneInfo.minTemp,
+          currentHumid: origindata.currentHumid, //최신 온습도 세팅
+          currentHumid2: origindata.currentHumid2, //최신 온습도 세팅
+          maxHumid: boardOneInfo.maxHumid,
+          minHumid: boardOneInfo.minHumid,
+          usage: boardOneInfo.usage,
+          autoLightUtctimeOn: boardOneInfo.autoLightUtctimeOn,
+          autoLightUtctimeOff: boardOneInfo.autoLightUtctimeOff,
+          type: origindata.type,
+        };
+      } else {
+        senddata = {
+          currentTemp: origindata.currentTemp,
+          currentHumid: origindata.currentHumid,
+          currentTemp2: origindata.currentTemp2,
+          currentHumid2: origindata.currentHumid2,
+          type: origindata.type,
+        };
+      }
 
       //json 데이터 생성
       const updateiotData = {
@@ -548,14 +599,14 @@ export class MqttController {
         console.log("createIotNature : " + JSON.stringify(createIotNature));
       }
 
-      //수동일때만 전송
-      //if (origindata.type == 2) {
-      pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/temphumid/getresponse/app";
+      //3. 전체 데이터 보내주기
+      if (origindata.type == 3) {//boardinfo
+        pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/boardinfo/getresponse/app";
+      } else {
+        pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/temphumid/getresponse/app";
+      }
       this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
-
       this.topicRetainDelete(beforeTopicAction, pubtopic);
-
-      //}
 
       console.log("*****************************************::온습도 응답::*****************************************");
     } else {//null
@@ -835,7 +886,6 @@ export class MqttController {
   async getBoardinfoRequest(@pd() data: String) {
 
     console.log("*****************************************::보드정보 요청::*****************************************");
-
     console.log("보드정보 요청::1");
 
     //userIdx, boardTempname 조회하여 체크
@@ -855,10 +905,11 @@ export class MqttController {
     if (searchAuth) {
       //전송할 데이터 만들기 
       let senddata = {
+        type: 3,
         result: true
       };
 
-      pubtopic = searchAuth.boardSerial + "/boardinfo/getrequest/pico";
+      pubtopic = searchAuth.boardSerial + "/temphumid/getrequest/pico";
 
       console.log("보드정보 요청::3");
       console.log("searchAuth : " + JSON.stringify(searchAuth));
@@ -879,7 +930,7 @@ export class MqttController {
     } else {//null
       //등록된 사용자 인증 코드가 없다고 app으로 publish
       let senddata = {
-        type: "보드정보 요청",
+        type: "보드정보 요청::null",
         message: Constants.CANNOT_FIND_AUTH,
         return: false,
       };
@@ -896,76 +947,76 @@ export class MqttController {
   }
 
   //7.보드정보 응답 : useridx, boardSerial 조회 
-  @MessagePattern('boardinfo/getresponse/nest')
-  async getBoardinfoResponse(@pd() data: String) {
+  // @MessagePattern('boardinfo/getresponse/nest')
+  // async getBoardinfoResponse(@pd() data: String) {
 
-    console.log("*****************************************::보드정보 응답::*****************************************");
-    let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
-    console.log("보드정보 응답::1");
-    console.log("origindata : " + JSON.stringify(origindata));
+  //   console.log("*****************************************::보드정보 응답::*****************************************");
+  //   let origindata = JSON.parse(JSON.stringify(data)); //전체 데이터
+  //   console.log("보드정보 응답::1");
+  //   console.log("origindata : " + JSON.stringify(origindata));
 
-    const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
+  //   const searchAuth = await this.mqttService.chkAuthinfo(origindata.userIdx, "boardSerial", origindata.boardSerial);
 
-    console.log("보드정보 응답::2");
-    console.log("searchAuth : " + JSON.stringify(searchAuth));
+  //   console.log("보드정보 응답::2");
+  //   console.log("searchAuth : " + JSON.stringify(searchAuth));
 
-    if (searchAuth) {
+  //   if (searchAuth) {
 
-      console.log("보드정보 응답::3");
-      console.log("origindata : " + JSON.stringify(origindata));
+  //     console.log("보드정보 응답::3");
+  //     console.log("origindata : " + JSON.stringify(origindata));
 
-      //보드 정보 가져오기
-      const boardOneInfo = await this.mqttService.getBoardInfo(searchAuth.idx, searchAuth.userIdx);
+  //     //보드 정보 가져오기
+  //     const boardOneInfo = await this.mqttService.getBoardInfo(searchAuth.idx, searchAuth.userIdx);
 
-      //전송데이터 불러오기
-      const boardInfo = await this.mqttService.getBoardList(boardOneInfo.idx, searchAuth.userIdx);
-      console.log("보드정보 응답::3");
-      console.log("boardInfo : " + JSON.stringify(boardInfo));
+  //     //전송데이터 불러오기
+  //     const boardInfo = await this.mqttService.getBoardList(boardOneInfo.idx, searchAuth.userIdx);
+  //     console.log("보드정보 응답::3");
+  //     console.log("boardInfo : " + JSON.stringify(boardInfo));
 
-      //publish할 데이터 
-      let senddata = {
-        boardIdx: boardInfo.idx,
-        cageName: boardInfo.cageName,
-        currentUvbLight: boardInfo.currentUvbLight,
-        currentHeatingLight: boardInfo.currentHeatingLight,
-        autoChkLight: boardInfo.autoChkLight,
-        autoChkTemp: boardInfo.autoChkTemp,
-        autoChkHumid: boardInfo.autoChkHumid,
-        currentTemp: origindata.currentTemp, //최신 온습도 세팅
-        currentTemp2: origindata.currentTemp2, //최신 온습도 세팅
-        maxTemp: boardInfo.maxTemp,
-        minTemp: boardInfo.minTemp,
-        currentHumid: origindata.currentHumid, //최신 온습도 세팅
-        currentHumid2: origindata.currentHumid2, //최신 온습도 세팅
-        maxHumid: boardInfo.maxHumid,
-        minHumid: boardInfo.minHumid,
-        usage: boardInfo.usage,
-        autoLightUtctimeOn: boardInfo.autoLightUtctimeOn,
-        autoLightUtctimeOff: boardInfo.autoLightUtctimeOff,
-      };
+  //     //publish할 데이터 
+  //     let senddata = {
+  //       // boardIdx: boardInfo.idx,
+  //       // cageName: boardInfo.cageName,
+  //       // currentUvbLight: boardInfo.currentUvbLight,
+  //       // currentHeatingLight: boardInfo.currentHeatingLight,
+  //       // autoChkLight: boardInfo.autoChkLight,
+  //       // autoChkTemp: boardInfo.autoChkTemp,
+  //       // autoChkHumid: boardInfo.autoChkHumid,
+  //       // currentTemp: origindata.currentTemp, //최신 온습도 세팅
+  //       // currentTemp2: origindata.currentTemp2, //최신 온습도 세팅
+  //       // maxTemp: boardInfo.maxTemp,
+  //       // minTemp: boardInfo.minTemp,
+  //       // currentHumid: origindata.currentHumid, //최신 온습도 세팅
+  //       // currentHumid2: origindata.currentHumid2, //최신 온습도 세팅
+  //       // maxHumid: boardInfo.maxHumid,
+  //       // minHumid: boardInfo.minHumid,
+  //       // usage: boardInfo.usage,
+  //       // autoLightUtctimeOn: boardInfo.autoLightUtctimeOn,
+  //       // autoLightUtctimeOff: boardInfo.autoLightUtctimeOff,
+  //     };
 
-      pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/boardinfo/getresponse/app";
-      console.log("보드정보 응답::4");
+  //     pubtopic = searchAuth.userIdx + "/" + searchAuth.boardTempname + "/temphumid/getresponse/app";
+  //     console.log("보드정보 응답::4");
 
-      console.log("searchAuth.userIdx : " + searchAuth.userIdx);
-      console.log("searchAuth.boardTempname : " + searchAuth.boardTempname);
-      console.log("pubtopic : " + pubtopic);
-      console.log("senddata : " + JSON.stringify(senddata));
+  //     console.log("searchAuth.userIdx : " + searchAuth.userIdx);
+  //     console.log("searchAuth.boardTempname : " + searchAuth.boardTempname);
+  //     console.log("pubtopic : " + pubtopic);
+  //     console.log("senddata : " + JSON.stringify(senddata));
 
-      //publish 생성
-      //client.publish(pubtopic, JSON.stringify(senddata), options_v);
-      this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
+  //     //publish 생성
+  //     //client.publish(pubtopic, JSON.stringify(senddata), options_v);
+  //     this.publishFunction(pubtopic, JSON.parse(JSON.stringify(senddata)));
 
-      //변경하면서 전에 토픽 보유 메세지 삭제하기 
-      this.topicRetainDelete(beforeTopicAction, pubtopic);
+  //     //변경하면서 전에 토픽 보유 메세지 삭제하기 
+  //     this.topicRetainDelete(beforeTopicAction, pubtopic);
 
-      console.log("*****************************************::보드정보 응답::*****************************************");
-    } else {//null
-      console.log("보드정보 응답::null");
-      console.log(Constants.CANNOT_FIND_AUTH);
-      console.log(pubtopic);
-    }
-  }
+  //     console.log("*****************************************::보드정보 응답::*****************************************");
+  //   } else {//null
+  //     console.log("보드정보 응답::null");
+  //     console.log(Constants.CANNOT_FIND_AUTH);
+  //     console.log(pubtopic);
+  //   }
+  // }
 
   //8.비상알람 자동 응답 : useridx, boardSerial 조회 
   @MessagePattern('emergency/getresponse/nest')
@@ -1007,6 +1058,8 @@ export class MqttController {
 
       //publish할 데이터 
       let senddata = {
+        boardIdx: boardOneInfo.idx,
+        cageName: boardOneInfo.cageName,
         module: origindata.module,
         limit: origindata.limit,
         currentTemp: origindata.currentTemp,
@@ -1070,9 +1123,31 @@ export class MqttController {
 
       //보내온 보드 idx가 searchAuth의 idx로 찾은 boardidx와 비교해서 같으면 통과 다르면 맞지 않다고 리턴
       if (boardInfo.idx == origindata.boardIdx) {
+
+
+        //데이터 변경 할 것. 
+
+
+
+        let autoLightUtctimeOn = boardInfo.autoLightUtctimeOn.split(':');
+        let autoLightUtctimeOff = boardInfo.autoLightUtctimeOff.split(':');
+
+
         //전송할 데이터 만들기 
         let senddata = {
-          result: true
+          userIdx: boardInfo.userIdx,
+          maxTemp: boardInfo.maxTemp,
+          minTemp: boardInfo.minTemp,
+          maxHumid: boardInfo.maxHumid,
+          minHumid: boardInfo.minHumid,
+          autoChkLight: boardInfo.autoChkLight,
+          autoChkTemp: boardInfo.autoChkTemp,
+          autoChkHumid: boardInfo.autoChkHumid,
+          ligthTurnOffHour: autoLightUtctimeOff[0],
+          ligthTurnOffMinute: autoLightUtctimeOff[1],
+          ligthTurnOnHour: autoLightUtctimeOn[1],
+          ligthTurnOnMinute: autoLightUtctimeOn[1],
+          result: true //성공 여부
         };
         pubtopic = searchAuth.boardSerial + "/setup/request/pico";
 

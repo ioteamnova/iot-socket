@@ -35,7 +35,6 @@ import { CreateIotEmergencyDto } from '../iot_emergency/dtos/create-Iotemergency
 import { IotEmergency } from '../iot_emergency/entities/iot-emergency.entity';
 import { IotEmergencyRepository } from '../iot_emergency/repositories/iot-emergency.repository';
 
-
 @Injectable()
 export class MqttService {
   private readonly client: mqtt.Client;
