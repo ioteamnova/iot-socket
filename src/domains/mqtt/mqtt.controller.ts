@@ -278,7 +278,7 @@ export class MqttController {
         //변경하면서 전에 토픽 보유 메세지 삭제하기 
         this.topicRetainDelete(beforeTopicAction, pubtopic);
       }
-    } else { //null
+    } else {
       //등록된 사용자 인증 코드가 없다고 app으로 publish
       let senddata = {
         type: "제품코드 등록 요청",
